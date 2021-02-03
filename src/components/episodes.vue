@@ -3,12 +3,15 @@
      <!-- <p> {{ selectedSeasonNumber.season }} </p> -->
 
     <div id="selectedSeasonEpisodes">
-      <p v-bind:id="'seasonTitle'" v-if="selectedSeasonTitle">{{ selectedSeasonTitle }}</p>
-      <div v-on:click="fetchEpisodeDetails(selectedSeason, episode.episode_number)" v-for="episode in selectedSeasonEpisodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'episode#' + episode.episode_number">
-        <p>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</p>
-        <div v-bind:id="'episode#' + episode.episode_number + 'Details'" class="episodeDetail">
-            <img v-bind:id="'episode#' + episode.episode_number + 'Image'" class="episodeImage"> 
-            <p v-bind:id="'episode#' + episode.episode_number + 'Overview'" class="episodeOverview"></p>
+      <!-- <p v-bind:id="'seasonTitle'" v-if="selectedSeasonTitle">{{ selectedSeasonTitle }}</p> -->
+
+      <div v-on:click="fetchEpisodeDetails(selectedSeason, episode.episode_number)" v-for="episode in selectedSeasonEpisodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number">
+        <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle">#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</p>
+
+        <div v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail" style="display: none;">
+            <img v-if="episode.still_path" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
+            <p v-if="episode.overview" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">{{ episode.overview }}</p>
+            <p v-else v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">Episode description not available</p>
         </div>
       </div>
     </div>
@@ -29,30 +32,80 @@ export default {
         let selectedSeason = selectedSeasonTitle
         let selectedEpisode = null
         let localStorageData = []
+        // let className = "asdjaksdjasdaksd"
 
         async function fetchEpisodeDetails(season, episode, status) {
-            let url = "https://api.themoviedb.org/3/tv/456/season/" + season + "/episode/" + episode + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
+            // let url = "https://api.themoviedb.org/3/tv/456/season/" + season + "/episode/" + episode + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
             let episodeData = null
-
-            await fetch(url, {method: 'get'})
-            .then((response) => {
-            return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                episodeData = data
-            })
-
-            localStorageData.push({season: season, episode: episode, image: episodeData.still_path, overview: episodeData.overview})
-            localStorage.setItem("savedData", JSON.stringify(localStorageData))
             
-            var episodeDetails = document.getElementById('episode#' + episode + 'Details')
-            var episodeImage = document.getElementById('episode#' + episode + 'Image')
-            var episodeOverview = document.getElementById('episode#' + episode + 'Overview')
+            localStorageData = localStorage.getItem("savedSeasons")
+            var checkLocalStorage = JSON.parse(localStorageData)
+
+            checkLocalStorage.forEach(eps => {
+                if(eps.text == "season" + season)
+                {
+                    episodeData = eps
+                    selectedEpisode = episodeData.episodes[episode - 1]
+                    console.log("season#" + season + " episode#" + episode + " loaded from localStorage")
+                    // console.log(episodeData)
+                    // console.log(episodeData.episodes[episode - 1])
+                }
+            })
             
-            episodeDetails.style.display = "block"
-            episodeImage.src = "https://www.themoviedb.org/t/p/w227_and_h127_bestv2" + episodeData.still_path
-            episodeOverview.innerText = episodeData.overview
+            //episode is not saved in localStorage
+            // if(!checkLocalStorage.includes("season" + season + "episode" + episode))
+            // {
+            //     await fetch(url, {method: 'get'})
+            //     .then((response) => {
+            //         return response.json()
+            //     })
+            //     .then((data) => {
+            //         // console.log(data)
+            //         episodeData = data
+            //         console.log("data from API")
+            //     })
+
+            //     localStorageData.push({season: season, episode: episode, still_path: episodeData.still_path, overview: episodeData.overview, text: 'season' + season + 'episode' + episode})
+            //     localStorage.setItem("savedData", JSON.stringify(localStorageData))
+            //     // console.log(localStorageData)
+            // }
+            // //episode is saved in localStorage
+            // else
+            // {
+            //     let savedEpisodes = JSON.parse(localStorage.getItem("savedData"))
+                
+            //     savedEpisodes.forEach(eps => {
+            //         if(eps.text == "season" + season + "episode" + episode)
+            //         {
+            //             episodeData = eps
+            //             console.log("data from localStorage")
+            //         }
+            //     })
+            // }
+           
+            var episodeTitle = document.getElementById('season#' + season + 'episode#' + episode + 'Title')
+            var episodeDetails = document.getElementById('season#' + season + 'episode#' + episode + 'Details')
+            var episodeImage = document.getElementById('season#' + season + 'episode#' + episode + 'Image')
+            var episodeOverview = document.getElementById('season#' + season + 'episode#' + episode + 'Overview')
+            // console.log(episodeDetails)
+            // console.log(episodeImage)
+            // console.log(episodeOverview)
+
+            // episodeDetails.className = 'episodeDetailsShow'
+            // episodeImage.src = "https://www.themoviedb.org/t/p/w227_and_h127_bestv2" + selectedEpisode.still_path
+            // episodeOverview.style.backgroundColor = "black"
+            // episodeOverview.style.color = "white"
+            // episodeOverview.innerText = selectedEpisode.overview
+            // console.log(episodeDetails.style.display)
+            
+            if(episodeDetails.style.display == "none")
+            {
+                episodeDetails.style.display = "block"
+            }
+            else if(episodeDetails.style.display == "block")
+            {
+                episodeDetails.style.display = "none"
+            }
         }
 
         return {
@@ -60,6 +113,7 @@ export default {
             selectedSeasonEpisodes,
             selectedSeasonTitle,
             selectedSeason,
+            // className,
 
             //functions
             fetchEpisodeDetails
@@ -72,7 +126,7 @@ export default {
   #selectedSeasonEpisodes
   {
     margin: auto;
-    margin-top: 5px;
+    margin-top: 0px;
     width: 1000px;
   }
 
@@ -110,12 +164,18 @@ export default {
 
   .episode:hover
   {
-    background-color: #feda0fcb;
+    background-color: #feda0fc2;
+  }
+
+  .episodeTitle
+  {
+      color: black;
   }
 
   .episodeDetail
   {
-     display: none;
+      /* background-color: black; */
+      /* color: white; */
   }
 
   .episodeImage
