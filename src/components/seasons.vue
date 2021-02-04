@@ -9,9 +9,11 @@
       <img id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.poster"/>
       <!-- <p id="showHomePage">{{showInfo.homePage}}</p> -->
       <a id="showNameLink" v-bind:href="showInfo.homePage"><p id="showNameText">{{showInfo.name}}</p></a>
+      <p id="showStatus">Status: {{showInfo.status}}</p>
       <p id="showNumberOfEpisodes">Total Episodes: {{showInfo.numberOfEpisodes}}</p>
       <p id="showNumberOfSeasons">Total Seasons: {{showInfo.numberOfSeasons}}</p>
-      <p id="showStatus">Status: {{showInfo.status}}</p>
+      <p id="showLastEpisode">Last Episode: {{showInfo.lastEpisode}}</p>
+      <p id="showNextEpisode">Next Episode: {{showInfo.nextEpisode}}</p>
       <p id="showDescription">{{showInfo.description}}</p>
     </div>
 
@@ -21,7 +23,7 @@
         <img v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
       </div>
     </div>
-
+  
   </div>
 </template>
 
@@ -79,6 +81,8 @@ export default {
               showInfo.numberOfEpisodes = data.number_of_episodes
               showInfo.numberOfSeasons = data.number_of_seasons
               showInfo.status = data.status
+              showInfo.nextEpisode = data.next_episode_to_air.air_date
+              showInfo.lastEpisode = data.last_episode_to_air.air_date
 
               //save to localStorage
               localStorageData.push({data})
@@ -214,7 +218,7 @@ export default {
           // console.log(formattedDate2)
 
           let difference = Math.abs(formattedDate1 - formattedDate2)
-          console.log(60 - difference + " minutes left until next API fetch")
+          console.log(100 - difference + " minutes left until next API fetch")
 
           //data was fetched more than 60 minutes ago
           if(difference > 100)
@@ -299,7 +303,7 @@ export default {
     border: 1px solid black;
   }
 
-  #showNumberOfEpisodes
+  #showStatus
   {
     padding-top: ;
   }
@@ -354,5 +358,63 @@ export default {
   ::-webkit-scrollbar {
     /* display: none; */
     
+  }
+
+  @media screen and (max-width: 1024px) {
+    #showPoster 
+    {
+        display: block;
+        position: relative;
+        float: none;
+        margin: 0px;
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 23px;
+        padding: 0px;
+        height: 260px;
+        width: 170px;
+        border: 1px solid black;
+    }
+
+    #showInfo {
+      margin-bottom: 23px;
+      margin-left: -1px;
+      width: 90vw;
+    }
+
+    #showInfo p
+    {
+      margin: 0px;
+      padding-bottom: 0px;
+      padding-left: 0px;
+      text-align: center;
+    }
+
+    #showNameLink, #showNameText
+    {
+      display: none;
+    }
+    
+    #showStatus
+    {
+      padding-top: 7px;
+    }
+
+    #showDescription {
+      padding-top: 27px;
+      width: 100%;
+    }
+
+    .season {
+      margin: 0px;
+      margin-right: 7px;
+      margin-bottom: 7px;
+    }
+
+    #scrollBarSeasons 
+    {
+      margin-left: -1px;
+      width: 96vw;
+    }
   }
 </style>

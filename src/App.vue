@@ -37,4 +37,14 @@ export default {
 body {
   background-color: white;
 }
+
+@media screen and (max-width: 1024px) {
+  #nav {
+    padding: 0px;
+  }
+
+  body {
+    background-color: black;
+  }
+}
 </style>

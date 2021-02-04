@@ -6,7 +6,7 @@
       <!-- <p v-bind:id="'seasonTitle'" v-if="selectedSeasonTitle">{{ selectedSeasonTitle }}</p> -->
 
       <div v-on:click="fetchEpisodeDetails(selectedSeason, episode.episode_number)" v-for="episode in selectedSeasonEpisodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number">
-        <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle">#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</p>
+        <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle"><b>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</b></p>
 
         <div v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail" style="display: none;">
             <img v-if="episode.still_path" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
@@ -187,6 +187,40 @@ export default {
 
   .episodeOverview
   {
-      height: 125px;
+      min-height: 125px;
   }
+
+  @media screen and (max-width: 1024px) {
+  #selectedSeasonEpisodes {
+      width: 100%;
+  }
+
+  .episode {
+    width: 96vw;
+  }
+
+  .episode p {
+    margin: 0px;
+    padding: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid black;
+    color: black;
+  }
+  
+  .episodeDetail
+  {
+      /* overflow: scroll; */
+  }
+
+  .episodeImage
+  {
+      display: none;
+  }
+
+  .episodeOverview {
+      min-height: 75px;
+  }
+}
 </style>
