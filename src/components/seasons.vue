@@ -34,9 +34,9 @@ export default {
       //vuex
       const store = useStore() //same as this.$store
       const selectedSeason = computed(() => store.getters['simpsonData/selectedSeason'])
-      const counter = computed(() => store.state.simpsonData.counter)
-      const name = computed(() => store.getters['simpsonData/name'])
-      const todos = computed(() => store.getters['simpsonData/doneTodos'])
+      // const counter = computed(() => store.state.simpsonData.counter)
+      // const name = computed(() => store.getters['simpsonData/name'])
+      // const todos = computed(() => store.getters['simpsonData/doneTodos'])
 
       //variables
       let showInfo = reactive({
@@ -81,8 +81,8 @@ export default {
               showInfo.status = data.status
 
               //save to localStorage
-              localStorageData.push({data: data})
-              localStorage.setItem("saveD", JSON.stringify(localStorageData))
+              localStorageData.push({data})
+              localStorage.setItem("savedShows", JSON.stringify(localStorageData))
           })
 
           store.dispatch('simpsonData/actionSetCounter', 123) //alternative syntax: store.dispatch({type: 'actionSetCounter', value: 10000000 })
@@ -92,67 +92,56 @@ export default {
 
       async function fetchShowSeason(season)
       {
-          var url = "https://api.themoviedb.org/3/tv/456/season/" + season + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
           var seasonData = null
-          var seasonNumber = null
+          var seasonNumber = season
           var numberOfEpisodes = null
           var airDate = null
           var localStorageData = []
           var ls = localStorage.getItem("savedSeasons")
           if(ls)
           {
-            console.log(JSON.parse(ls))
+            // console.log(JSON.parse(ls))
             localStorageData = JSON.parse(ls)
           }
           var checkLocalStorage = JSON.stringify(localStorageData)
+          let newDate = new Date().toISOString().substr(0, 16)
           // console.log(seasons.length)
 
-          await fetch(url, {method: 'get'})
-          .then((response) => {
-              return response.json()
-          })
-          .then((data) => {
-              // console.log(data)
+          //check if season is saved in localStorage
+          if(checkLocalStorage.includes("season" + season))
+          {
+              console.log("season#" + season + " fetched from localStorage")
               
-              //set variables
-              seasonInfo.episodes = data.episodes
-              seasonData = {title: data.season_number, episodes: data.episodes}
-              seasonNumber = data.season_number
-              numberOfEpisodes = data.episodes.length
-              airDate = data.air_date
+              localStorageData.forEach(s => {
+                      if(s.text == "season" + season)
+                      {
+                          seasonData = s
 
-              //save to localStorage
-              if(!checkLocalStorage.includes("season" + seasonNumber))
+                          // console.log("data from localStorage")
+                          // console.log(seasonData)
+                          // console.log(seasonData.savedAt)
+                          // console.log(newDate)
+                      }
+                  })
+
+              //check when season data was fetched
+              if(DateValidation(seasonData.savedAt, newDate) == true)
               {
-                localStorageData.push({season: seasonNumber, episodes: seasonInfo.episodes, text: "season" + seasonNumber})
-                localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
+                  store.dispatch('simpsonData/actionSetSelectedSeason', seasonData)
               }
-              else 
+              else
               {
-                console.log("season#" + seasonNumber + " already saved in localStorage")
+                  fetchSeasonDataFromAPI(seasonNumber, localStorageData)
               }
+          }
+          else
+          {
+              fetchSeasonDataFromAPI(seasonNumber, localStorageData)
+          }
 
-              //vuex
-              store.dispatch('simpsonData/actionSetSelectedSeason', seasonData)
-
-              
-              //collapseAllEpisodes
-              var x = document.getElementsByClassName("episodeDetail").length
-
-              for(var counter = 0; counter < x; counter++)
-              {
-                var z = document.getElementsByClassName("episodeDetail")[counter].id
-                var e = document.getElementById(z)
-                e.style.display = "none"
-              }
-          })
-
+          //reduce opacity on not selected seasons
           var selectedDiv = document.getElementById("season#" + season)
           var seasons = document.getElementsByClassName("season")
-          // var selectedSeasonTitle = document.getElementById("seasonTitle")
-          var numberOfEpisodes = seasons.length
-          var airDate = null
-          // console.log(seasons.length)
 
           for(var c = 0; c < seasons.length; c++)
           {
@@ -160,8 +149,83 @@ export default {
           }
 
           selectedDiv.style.opacity = "100%"
-          // selectedSeasonTitle.style.display = "block"
-          // selectedSeasonTitle.innerText = numberOfEpisodes + " episodes"
+
+          //collapseAllEpisodes
+          var x = document.getElementsByClassName("episodeDetail").length
+
+          for(var counter = 0; counter < x; counter++)
+          {
+              var z = document.getElementsByClassName("episodeDetail")[counter].id
+              var e = document.getElementById(z)
+              e.style.display = "none"
+          }
+      }
+
+      async function fetchSeasonDataFromAPI(season, localStorageData)
+      {
+        var seasonData = null
+        var seasonNumber = season
+        var numberOfEpisodes = null
+        var airDate = null
+        var localStorageData = localStorageData
+        var url = "https://api.themoviedb.org/3/tv/456/season/" + season + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
+        
+        await fetch(url, {method: 'get'})
+            .then((response) => {
+                  return response.json()
+            })
+            .then((data) => {
+                // console.log(data)
+                
+                //set variables
+                seasonInfo.episodes = data.episodes
+                seasonData = {title: data.season_number, episodes: data.episodes}
+                seasonNumber = data.season_number
+                numberOfEpisodes = data.episodes.length
+                airDate = data.air_date
+  
+                //save to localStorage
+                localStorageData.push({season: seasonNumber, episodes: seasonInfo.episodes, text: "season" + seasonNumber, savedAt: new Date().toISOString().substr(0, 16)})
+                localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
+  
+                //vuex
+                store.dispatch('simpsonData/actionSetSelectedSeason', seasonData)
+            })
+
+            console.log("season#" + season + " data fetched from API")
+      }
+
+      function DateValidation(date1, date2)
+      {
+          let formattedDate1 = date1.substr(0, 4)
+          formattedDate1 += date1.substr(5, 2)
+          formattedDate1 += date1.substr(8, 2)
+          formattedDate1 += date1.substr(11, 2)
+          formattedDate1 += date1.substr(14, 2)
+          formattedDate1 = parseInt(formattedDate1)
+
+          let formattedDate2 = date2.substr(0, 4)
+          formattedDate2 += date2.substr(5, 2)
+          formattedDate2 += date2.substr(8, 2)
+          formattedDate2 += date2.substr(11, 2)
+          formattedDate2 += date2.substr(14, 2)
+          formattedDate2 = parseInt(formattedDate2)
+          // console.log(formattedDate1)
+          // console.log(formattedDate2)
+
+          let difference = Math.abs(formattedDate1 - formattedDate2)
+          console.log(60 - difference + " minutes left until next API fetch")
+
+          //data was fetched more than 60 minutes ago
+          if(difference > 100)
+          {
+              return false
+          }
+          //data was fetched less than 60 minutes ago
+          else
+          {
+              return true
+          }
       }
        
       return {

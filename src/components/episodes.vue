@@ -34,23 +34,23 @@ export default {
         let localStorageData = []
         // let className = "asdjaksdjasdaksd"
 
-        async function fetchEpisodeDetails(season, episode, status) {
+        async function fetchEpisodeDetails(season, episode) {
             // let url = "https://api.themoviedb.org/3/tv/456/season/" + season + "/episode/" + episode + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
-            let episodeData = null
+            // let episodeData = null
             
-            localStorageData = localStorage.getItem("savedSeasons")
-            var checkLocalStorage = JSON.parse(localStorageData)
+            // localStorageData = localStorage.getItem("savedSeasons")
+            // var checkLocalStorage = JSON.parse(localStorageData)
 
-            checkLocalStorage.forEach(eps => {
-                if(eps.text == "season" + season)
-                {
-                    episodeData = eps
-                    selectedEpisode = episodeData.episodes[episode - 1]
-                    console.log("season#" + season + " episode#" + episode + " loaded from localStorage")
-                    // console.log(episodeData)
-                    // console.log(episodeData.episodes[episode - 1])
-                }
-            })
+            // checkLocalStorage.forEach(eps => {
+            //     if(eps.text == "season" + season)
+            //     {
+            //         episodeData = eps
+            //         selectedEpisode = episodeData.episodes[episode - 1]
+            //         console.log("season#" + season + " episode#" + episode + " loaded from localStorage")
+            //         // console.log(episodeData)
+            //         // console.log(episodeData.episodes[episode - 1])
+            //     }
+            // })
             
             //episode is not saved in localStorage
             // if(!checkLocalStorage.includes("season" + season + "episode" + episode))
