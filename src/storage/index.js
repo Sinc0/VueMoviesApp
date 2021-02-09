@@ -13,21 +13,22 @@ export default createStore({
 
   //modules
   modules: {
-    simpsonData: {
+    showData: {
       namespaced: true,
       
       //state
       state: {
         selectedShow: null,
-        selectedSeasonEpisodes: null,
-        selectedSeasonTitle: null,
+        selectedSeason: null,
+        // selectedSeasonEpisodes: null,
+        // selectedSeasonTitle: null,
         selectedEpisode: null,
-        counter: 10,
-        name: "steve",
-        todos: [
-          { id: 1, text: '...', done: true },
-          { id: 2, text: '...', done: false }
-        ]
+        counter: null,
+        // name: "steve",
+        // todos: [
+        //   { id: 1, text: '...', done: true },
+        //   { id: 2, text: '...', done: false }
+        // ]
       },
       
       //getters
@@ -41,13 +42,21 @@ export default createStore({
         name(state) {
           return state.name
         },
-        selectedSeasonEpisodes(state)
+        selectedSeason(state)
         {
-          return state.selectedSeasonEpisodes
+          return state.selectedSeason
         },
-        selectedSeasonTitle(state)
+        // selectedSeasonEpisodes(state)
+        // {
+        //   return state.selectedSeasonEpisodes
+        // },
+        // selectedSeasonTitle(state)
+        // {
+        //   return state.selectedSeasonTitle
+        // },
+        selectedShow(state)
         {
-          return state.selectedSeasonTitle
+          return state.selectedShow
         }
       },
 
@@ -58,8 +67,13 @@ export default createStore({
         },
         
         mutationSetSelectedSeason (state, value) {
-          state.selectedSeasonEpisodes = value.episodes
-          state.selectedSeasonTitle = value.title
+          state.selectedSeason = value
+          // state.selectedSeasonEpisodes = value.episodes
+          // state.selectedSeasonTitle = value.season
+        },
+        
+        mutationSetSelectedShow (state, value) {
+          state.selectedShow = value
         }
         
       },
@@ -71,7 +85,12 @@ export default createStore({
         },
         
         actionSetSelectedSeason ({commit}, value) {
+          console.log(value)
           commit('mutationSetSelectedSeason', value)
+        },
+        
+        actionSetSelectedShow ({commit}, value) {
+          commit('mutationSetSelectedShow', value)
         }
       }
       

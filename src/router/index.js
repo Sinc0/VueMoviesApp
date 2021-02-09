@@ -1,14 +1,28 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 //components
-import Home from '../views/home.vue'
+import Start from '../views/viewStart.vue'
+import Show from '../views/viewShow.vue'
+import Asdf from '../views/viewAsdf.vue'
 
 const routes = [
-  //home
-  {
+  //start
+  { 
     path: '/',
-    name: 'home',
-    component: Home
+    name: 'start',
+    component: Start,
+  },
+  //show
+  {
+    path: '/show',
+    name: 'show',
+    component: Show,
+  },
+  //asdf
+  {
+    path: '/asdf',
+    name: 'asdf',
+    component: Asdf,
   }
 ]
 

@@ -2,16 +2,22 @@
   <div>
      <!-- <p> {{ selectedSeasonNumber.season }} </p> -->
 
-    <div id="selectedSeasonEpisodes">
+    <div v-if="selectedSeason" id="selectedSeasonEpisodes">
+      <!-- <p>{{selectedSeason.showId}}</p> -->
+      <!-- <p>{{selectedSeason.showName}}</p> -->
+      <!-- <p>{{selectedSeason.season}}</p> -->
+      <!-- <p>{{selectedSeasonEpisodes}}</p> -->
+      <!-- <p>season: {{selectedSeasonEpisodes}}</p> -->
+      <!-- <p>season: {{selectedSeasonTitle}}</p> -->
       <!-- <p v-bind:id="'seasonTitle'" v-if="selectedSeasonTitle">{{ selectedSeasonTitle }}</p> -->
 
-      <div v-on:click="fetchEpisodeDetails(selectedSeason, episode.episode_number)" v-for="episode in selectedSeasonEpisodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number">
+      <div v-on:click="fetchEpisodeDetails(selectedSeason.season, episode.episode_number)" v-for="episode in selectedSeason.episodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number">
         <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle"><b>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</b></p>
 
-        <div v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail" style="display: none;">
-            <img v-if="episode.still_path" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
-            <p v-if="episode.overview" v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">{{ episode.overview }}</p>
-            <p v-else v-bind:id="'season#' + selectedSeason + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">Episode description not available</p>
+        <div v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail" style="display: none;">
+            <img v-if="episode.still_path" v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
+            <p v-if="episode.overview" v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">{{ episode.overview }}</p>
+            <p v-else v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">Episode description not available</p>
         </div>
       </div>
     </div>
@@ -27,14 +33,20 @@ export default {
     setup() {
         //vuex
         const store = useStore() //same as this.$store
-        const selectedSeasonEpisodes = computed(() => store.getters['simpsonData/selectedSeasonEpisodes'])
-        const selectedSeasonTitle = computed(() => store.getters['simpsonData/selectedSeasonTitle'])
-        let selectedSeason = selectedSeasonTitle
+        const selectedSeason = computed(() => store.getters['showData/selectedSeason'])
+        console.log(selectedSeason.value)
+        // const selectedSeasonEpisodes = computed(() => store.getters['showData/selectedSeasonEpisodes'])
+        // const selectedSeasonTitle = computed(() => store.getters['showData/selectedSeasonTitle'])
+        // console.log(selectedSeasonTitle)
+        // let selectedSeason = selectedSeasonTitle
         let selectedEpisode = null
         let localStorageData = []
         // let className = "asdjaksdjasdaksd"
 
-        async function fetchEpisodeDetails(season, episode) {
+        async function fetchEpisodeDetails(season, episode) 
+        {
+          console.log(season)
+          console.log(episode)
             // let url = "https://api.themoviedb.org/3/tv/456/season/" + season + "/episode/" + episode + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
             // let episodeData = null
             
@@ -52,7 +64,7 @@ export default {
             //     }
             // })
             
-            //episode is not saved in localStorage
+            // // episode is not saved in localStorage
             // if(!checkLocalStorage.includes("season" + season + "episode" + episode))
             // {
             //     await fetch(url, {method: 'get'})
@@ -110,9 +122,10 @@ export default {
 
         return {
             //variables
-            selectedSeasonEpisodes,
-            selectedSeasonTitle,
             selectedSeason,
+            // selectedSeasonEpisodes,
+            // selectedSeasonTitle,
+            // selectedSeason,
             // className,
 
             //functions
@@ -122,7 +135,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   #selectedSeasonEpisodes
   {
     margin: auto;
