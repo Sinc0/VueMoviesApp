@@ -1,16 +1,6 @@
 <template>
   <div>
-     <!-- <p> {{ selectedSeasonNumber.season }} </p> -->
-
     <div v-if="selectedSeason" id="selectedSeasonEpisodes">
-      <!-- <p>{{selectedSeason.showId}}</p> -->
-      <!-- <p>{{selectedSeason.showName}}</p> -->
-      <!-- <p>{{selectedSeason.season}}</p> -->
-      <!-- <p>{{selectedSeasonEpisodes}}</p> -->
-      <!-- <p>season: {{selectedSeasonEpisodes}}</p> -->
-      <!-- <p>season: {{selectedSeasonTitle}}</p> -->
-      <!-- <p v-bind:id="'seasonTitle'" v-if="selectedSeasonTitle">{{ selectedSeasonTitle }}</p> -->
-
       <div v-on:click="fetchEpisodeDetails(selectedSeason.season, episode.episode_number)" v-for="episode in selectedSeason.episodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number">
         <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle"><b>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</b></p>
 
@@ -34,14 +24,11 @@ export default {
         //vuex
         const store = useStore() //same as this.$store
         const selectedSeason = computed(() => store.getters['showData/selectedSeason'])
-        console.log(selectedSeason.value)
-        // const selectedSeasonEpisodes = computed(() => store.getters['showData/selectedSeasonEpisodes'])
-        // const selectedSeasonTitle = computed(() => store.getters['showData/selectedSeasonTitle'])
-        // console.log(selectedSeasonTitle)
-        // let selectedSeason = selectedSeasonTitle
+        // console.log(selectedSeason.value)
+ 
+        //variables
         let selectedEpisode = null
         let localStorageData = []
-        // let className = "asdjaksdjasdaksd"
 
         //lifecycle
         onUpdated(() => {
@@ -57,70 +44,13 @@ export default {
 
         async function fetchEpisodeDetails(season, episode) 
         {
-          console.log(season)
-          console.log(episode)
-            // let url = "https://api.themoviedb.org/3/tv/456/season/" + season + "/episode/" + episode + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
-            // let episodeData = null
-            
-            // localStorageData = localStorage.getItem("savedSeasons")
-            // var checkLocalStorage = JSON.parse(localStorageData)
-
-            // checkLocalStorage.forEach(eps => {
-            //     if(eps.text == "season" + season)
-            //     {
-            //         episodeData = eps
-            //         selectedEpisode = episodeData.episodes[episode - 1]
-            //         console.log("season#" + season + " episode#" + episode + " loaded from localStorage")
-            //         // console.log(episodeData)
-            //         // console.log(episodeData.episodes[episode - 1])
-            //     }
-            // })
-            
-            // // episode is not saved in localStorage
-            // if(!checkLocalStorage.includes("season" + season + "episode" + episode))
-            // {
-            //     await fetch(url, {method: 'get'})
-            //     .then((response) => {
-            //         return response.json()
-            //     })
-            //     .then((data) => {
-            //         // console.log(data)
-            //         episodeData = data
-            //         console.log("data from API")
-            //     })
-
-            //     localStorageData.push({season: season, episode: episode, still_path: episodeData.still_path, overview: episodeData.overview, text: 'season' + season + 'episode' + episode})
-            //     localStorage.setItem("savedData", JSON.stringify(localStorageData))
-            //     // console.log(localStorageData)
-            // }
-            // //episode is saved in localStorage
-            // else
-            // {
-            //     let savedEpisodes = JSON.parse(localStorage.getItem("savedData"))
-                
-            //     savedEpisodes.forEach(eps => {
-            //         if(eps.text == "season" + season + "episode" + episode)
-            //         {
-            //             episodeData = eps
-            //             console.log("data from localStorage")
-            //         }
-            //     })
-            // }
+            console.log(season)
+            console.log(episode)
            
             var episodeTitle = document.getElementById('season#' + season + 'episode#' + episode + 'Title')
             var episodeDetails = document.getElementById('season#' + season + 'episode#' + episode + 'Details')
             var episodeImage = document.getElementById('season#' + season + 'episode#' + episode + 'Image')
             var episodeOverview = document.getElementById('season#' + season + 'episode#' + episode + 'Overview')
-            // console.log(episodeDetails)
-            // console.log(episodeImage)
-            // console.log(episodeOverview)
-
-            // episodeDetails.className = 'episodeDetailsShow'
-            // episodeImage.src = "https://www.themoviedb.org/t/p/w227_and_h127_bestv2" + selectedEpisode.still_path
-            // episodeOverview.style.backgroundColor = "black"
-            // episodeOverview.style.color = "white"
-            // episodeOverview.innerText = selectedEpisode.overview
-            // console.log(episodeDetails.style.display)
             
             if(episodeDetails.style.display == "none")
             {
@@ -135,7 +65,7 @@ export default {
         function displayEpisodeList()
         {
           var selectedSeasonEpisodes = document.getElementById("selectedSeasonEpisodes")
-          
+
           if(selectedSeasonEpisodes != null)
           {
               selectedSeasonEpisodes.style.display = "block"
@@ -156,10 +86,6 @@ export default {
         return {
             //variables
             selectedSeason,
-            // selectedSeasonEpisodes,
-            // selectedSeasonTitle,
-            // selectedSeason,
-            // className,
 
             //functions
             fetchEpisodeDetails

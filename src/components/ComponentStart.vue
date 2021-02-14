@@ -1,9 +1,6 @@
 <template>
   <div>
     <div>
-        <!-- count: {{ count }} -->
-        <!-- <br /> -->
-        <!-- {{ selectedShow }}  -->
         <div id="scrollBarShows">
             <div class="show">
                 <router-link to="/show/456"><img v-bind:src="''"></router-link>

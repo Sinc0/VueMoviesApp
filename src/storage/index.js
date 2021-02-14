@@ -20,40 +20,15 @@ export default createStore({
       state: {
         selectedShow: null,
         selectedSeason: null,
-        // selectedSeasonEpisodes: null,
-        // selectedSeasonTitle: null,
         selectedEpisode: null,
-        counter: null,
-        // name: "steve",
-        // todos: [
-        //   { id: 1, text: '...', done: true },
-        //   { id: 2, text: '...', done: false }
-        // ]
       },
       
       //getters
       getters: {
-        times(state) {
-          return state.counter * 2
-        },
-        doneTodos(state) {
-          return state.todos
-        },
-        name(state) {
-          return state.name
-        },
         selectedSeason(state)
         {
           return state.selectedSeason
         },
-        // selectedSeasonEpisodes(state)
-        // {
-        //   return state.selectedSeasonEpisodes
-        // },
-        // selectedSeasonTitle(state)
-        // {
-        //   return state.selectedSeasonTitle
-        // },
         selectedShow(state)
         {
           return state.selectedShow
@@ -61,15 +36,9 @@ export default createStore({
       },
 
       //mutations
-      mutations: {
-        mutationSetCounter (state, value) {
-          state.counter = value
-        },
-        
+      mutations: {      
         mutationSetSelectedSeason (state, value) {
           state.selectedSeason = value
-          // state.selectedSeasonEpisodes = value.episodes
-          // state.selectedSeasonTitle = value.season
         },
         
         mutationSetSelectedShow (state, value) {
@@ -79,11 +48,7 @@ export default createStore({
       },
 
       //actions
-      actions: {
-        actionSetCounter ({commit}, value) {
-          commit('mutationSetCounter', value)
-        },
-        
+      actions: {   
         actionSetSelectedSeason ({commit}, value) {
           console.log(value)
           commit('mutationSetSelectedSeason', value)

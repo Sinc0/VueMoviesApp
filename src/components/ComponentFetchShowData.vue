@@ -20,25 +20,10 @@ export default {
         console.log(showId)
 
         // vuex
-        const store = useStore() //same as this.$store
-        // const selectedShow = computed(() => store.getters['showData/selectedShow'])
-        const count = computed(() => store.getters['showData/times'])
-        const showTest = computed(() => { return store.getters['showData/selectedShow'] })
-        console.log(showTest.value)
-        
-        // variables
-        // let showInfo = reactive({
-        //     name: null,
-        //     description: null,
-        //     status: null,
-        //     poster: null,
-        //     homePage: null,
-        //     numberOfSeasons: null,
-        //     seasons: null,
-        //     numberOfEpisodes: null,
-        //     episodes: null
-        // })
+        const store = useStore()
+        const selectedShow = computed(() => { return store.getters['showData/selectedShow'] })
 
+        //functions
         fetchShowData(showId)
 
         async function fetchShowData(id)
@@ -62,11 +47,6 @@ export default {
                 //set variables
                 showData = {id: data.id, name: data.name, data: data}
                 console.log(showData)
-
-                // seasonData = {title: data.season_number, episodes: data.episodes}
-                // seasonNumber = data.season_number
-                // numberOfEpisodes = data.episodes.length
-                // airDate = data.air_date
   
                 // save to localStorage
                 let ls = localStorage.getItem("savedShows")
@@ -91,12 +71,8 @@ export default {
 
                 //vuex
                 console.log("show#" + id + " data fetched from API")
-
                 store.dispatch('showData/actionSetSelectedShow', showData)
                 store.dispatch('showData/actionSetCounter', 1)
-
-                //router
-                // router.push('/show')
             })
         }
 
@@ -111,14 +87,8 @@ export default {
         }
 
         return {
-            // showData,
-            // count,
-            showTest
+            //selectedShow
         }   
-
-        return {
-
-        }
     }
 }
 </script>
