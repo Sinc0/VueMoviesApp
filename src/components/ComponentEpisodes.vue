@@ -14,10 +14,10 @@
       <div v-on:click="fetchEpisodeDetails(selectedSeason.season, episode.episode_number)" v-for="episode in selectedSeason.episodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number">
         <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle"><b>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</b></p>
 
-        <div v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail" style="display: none;">
-            <img v-if="episode.still_path" v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
-            <p v-if="episode.overview" v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">{{ episode.overview }}</p>
-            <p v-else v-bind:id="'season#' + /* selectedSeason */ + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">Episode description not available</p>
+        <div v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail">
+            <img v-if="episode.still_path" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Image'" class="episodeImage" v-bind:src="'https://www.themoviedb.org/t/p/w227_and_h127_bestv2' + episode.still_path"> 
+            <p v-if="episode.overview" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">{{ episode.overview }}</p>
+            <p v-else v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Overview'" class="episodeOverview">Episode description not available</p>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import {ref, reactive, computed} from 'vue'
+import {ref, reactive, computed, onUpdated} from 'vue'
 import {useStore} from 'vuex'
 
 export default {
@@ -42,6 +42,15 @@ export default {
         let selectedEpisode = null
         let localStorageData = []
         // let className = "asdjaksdjasdaksd"
+
+        //lifecycle
+        onUpdated(() => {
+          console.log("episodes updated")
+          var d = document.getElementsByClassName("episodeDetail").length
+          // console.log(d)
+          
+          collapseAllEpisodes(d)
+        })
 
         async function fetchEpisodeDetails(season, episode) 
         {
@@ -118,6 +127,17 @@ export default {
             {
                 episodeDetails.style.display = "none"
             }
+        }
+
+        function collapseAllEpisodes(numberOfEpisodes)
+        {
+          for(var c = 0; c < numberOfEpisodes; c++)
+          {
+            var z = document.getElementsByClassName("episodeDetail")[c].id
+            var e = document.getElementById(z)
+            // console.log(e)
+            e.style.display = "none"
+          }
         }
 
         return {

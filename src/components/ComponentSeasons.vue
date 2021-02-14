@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    <!-- <p v-if="testVar"> {{ testVar }} </p> -->
     <!-- <p v-if="showInfo.data"> {{ showInfo.data.id }} </p> -->
     <!-- <p v-if="showInfo"> {{ showInfo.data }} </p> -->
     <!-- <p>count: {{ count }} show: {{ selectedShow }}</p> -->
@@ -8,12 +7,16 @@
     <!-- <p>{{ vuexName }}</p> -->
     <!-- <p>{{ vuexTodo }}</p> -->
     <!-- <p>{{ vuexSelectedSeason }}</p> -->
+    <!-- {{showInfo.data}} -->
+    <!-- {{showInfo.data.data.number_of_seasons}} -->
+    <!-- {{showInfo.data.data.number_of_episodes}} -->
+    <!-- {{seasonInfoRefs.data}} -->
 
-    <div id="showInfo">
-     <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
-      <!-- <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a> -->
-      <!-- <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a> -->
-      <!-- <p v-if="showInfo.data" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p> -->
+    <div id="showInfo" v-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
+      <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
+      <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
+      <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
+      <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
       <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
       <p v-if="showInfo.data" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
       <p v-if="showInfo.data" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
@@ -25,15 +28,17 @@
     <div id="scrollBarSeasons" v-if="showInfo.data">
       <div v-on:click="fetchShowSeason(showInfo.data.id, season.season_number)" v-for="season in showInfo.data.data.seasons.slice().reverse()" v-bind:key="season.id" class="season" v-bind:id="'season#' + season.season_number">
         <p><b>{{season.name}}</b></p>
-        <img v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
+        <img v-if="season.poster_path" v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
       </div>
     </div>
+
+    <!-- <button v-on:click="incrementCounter()">click</button> -->
   
   </div>
 </template>
 
 <script>
-import {ref, reactive, computed, watch, onMounted, onBeforeMount, beforeUpdate} from 'vue'
+import {ref, toRef, toRefs, reactive, computed, watch, watchEffect, onMounted, onBeforeMount, beforeUpdate, onUpdated, onBeforeUpdate} from 'vue'
 import {useStore} from 'vuex'
 
   // setTimeout(function(){ alert("Hello"); }, 3000);
@@ -43,22 +48,53 @@ export default {
       //   console.log('onBeforeMounted')
       // })
       
-      onMounted(() => {
-         console.log('mounted in the composition api!')
-         fetchShowSeason(showId, showNumberOfSeasons)
-      })
-      //   console.log(this) 
+      // onBeforeMount(() => {
+      //   console.log('on before mount in the composition api!')
+      // })
+
+      // onMounted(() => {
+      //   console.log("on mounted in the composition api!")
+      //   // fetchShowSeason(132, 1)
+      //   // styleDivs(1)
+      // })
+
+      // onUpdated(() => {
+      //   console.log("on updated in the composition api!")
+      // })
+
+      // watchEffect(() => {
+      //   console.log("watchEffect in the composition api!")
+      //   console.log(selectedShow)
+      // })
+
+      // var counterx = ref(0)
+
+      // function incrementCounter()
+      // {
+      //   counterx.value++
+      //   // console.log(counterx.value)
+      // }
+      // watch(seasonInfo, (newValue, prevValue) => {
+      //   console.log("watch in the composition api!")
+      //   console.log(newValue)
+      //   console.log(prevValue)
+      // })
+
+      // console.log(this) 
 
       //vuex
       const store = useStore() //same as this.$store
       const count = computed(() => store.getters['showData/times'])
-      var testVar = null
-      var selectedShow = computed(() => { return store.getters['showData/selectedShow'] })
-      var showData = selectedShow.value.data
-      var showId = selectedShow.value.id
-      var showName = selectedShow.value.name
-      var showNumberOfSeasons = selectedShow.value.data.number_of_seasons
-      const selectedSeason = computed(() => store.getters['showData/selectedSeason'])
+      const selectedShow = computed(() => { return store.getters['showData/selectedShow']})
+      const selectedSeason = computed(() => { return store.getters['showData/selectedSeason']})
+
+      // console.log("***")
+      // console.log(selectedShow.value)
+      // console.log("***")
+      // var showData = null
+      // var showId = null
+      // var showName = null
+      // var showNumberOfSeasons = null
       // const counter = computed(() => store.state.simpsonData.counter)
       // const name = computed(() => store.getters['simpsonData/name'])
       // const todos = computed(() => store.getters['simpsonData/doneTodos'])
@@ -69,21 +105,41 @@ export default {
       //variables
       let showInfo = reactive({
         data: selectedShow,
-        // name: null,
-        // description: null,
-        // status: null,
-        // poster: null,
-        // homePage: null,
-        // numberOfSeasons: null,
-        // seasons: null,
-        // numberOfEpisodes: null,
-        // episodes: null
+        name: null,
+        description: null,
+        status: null,
+        poster: null,
+        homePage: null,
+        numberOfSeasons: null,
+        seasons: null,
+        numberOfEpisodes: null,
+        episodes: null
       })
 
-      console.log(showInfo.name)
+      // if(selectedShow.value != null)
+      // {
+      //   showInfo.data = selectedShow
+      //   showData = selectedShow.value.data
+      //   showId = selectedShow.value.id
+      //   showName = selectedShow.value.name
+      //   showNumberOfSeasons = selectedShow.value.data.number_of_seasons 
+      // }
+
+      // console.log(showInfo.name)
 
       let seasonInfo = reactive({
-        episodes: null
+        data: selectedSeason
+      })
+
+      const seasonInfoRefs = toRefs(seasonInfo)
+
+      watch(seasonInfoRefs.data, (newValue, oldValue) => {
+        console.log("season#" + seasonInfoRefs.data.value.season + " selected")
+        console.log("old value: " + oldValue + " new value: " + newValue)
+        console.log(seasonInfoRefs.data.value)
+        // console.log('The new counter value is: ' + counterx.value)
+
+        selectedSeasonOpacityStyling(seasonInfoRefs.data.value.season)
       })
 
       //functions
@@ -168,8 +224,8 @@ export default {
 
       async function fetchShowSeason(show, season)
       {
-        console.log(show)
-        console.log(season)
+          console.log(show)
+          console.log(season)
 
           var seasonData = null
           var showId = show
@@ -197,9 +253,9 @@ export default {
                       {
                           seasonData = s
 
-                          // console.log("data from localStorage")
-                          // console.log(seasonData)
-                          // console.log(seasonData.savedAt)
+                          console.log("data from localStorage")
+                          console.log(seasonData)
+                          console.log(seasonData.savedAt)
                           // console.log(newDate)
                       }
                   })
@@ -218,41 +274,6 @@ export default {
           {
               fetchSeasonDataFromAPI(show, seasonNumber, localStorageData)
           }
-
-          //reduce opacity on not selected seasons
-          var selectedDiv = document.getElementById("season#" + season)
-          console.log(season)
-          var seasons = document.getElementsByClassName("season")
-          var seasonSpecials = document.getElementById("season#" + [0])
-
-          if(seasonSpecials != null)
-          {
-              console.log(seasonSpecials)
-
-              for(var c = 0; c < seasons.length; c++)
-              {
-                  document.getElementById("season#" + [c]).style.opacity = "50%"
-              }
-          }
-          else
-          {
-              for(var c = 1; c <= seasons.length; c++)
-              {
-                  document.getElementById("season#" + [c]).style.opacity = "50%"
-              }
-          }          
-
-          selectedDiv.style.opacity = "100%"
-
-          // collapseAllEpisodes
-          var x = document.getElementsByClassName("episodeDetail").length
-
-          for(var counter = 1; counter < x; counter++)
-          {
-              var z = document.getElementsByClassName("episodeDetail")[counter].id
-              var e = document.getElementById(z)
-              e.style.display = "none"
-          }
       }
 
       async function fetchSeasonDataFromAPI(show, season, localStorageData)
@@ -260,6 +281,7 @@ export default {
         var seasonData = null
         var showId = show
         var seasonNumber = season
+        var seasonEpisodes = null
         var numberOfEpisodes = null
         var airDate = null
         var localStorageData = localStorageData
@@ -273,20 +295,21 @@ export default {
                 console.log(data)
                 
                 //set variables
-                seasonInfo.episodes = data.episodes
+                // seasonInfo.episodes = data.episodes
                 seasonData = {showId: selectedShow.value.id, showName: selectedShow.value.name, season: data.season_number, episodes: data.episodes}
-                seasonNumber = data.season_number
-                numberOfEpisodes = data.episodes.length
-                airDate = data.air_date
-  
-                //save to localStorage
-                console.log(selectedShow.value.id)
-                console.log(selectedShow.value.name)
-                localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: seasonNumber, episodes: seasonInfo.episodes, searchString: "show" + selectedShow.value.id + "season" + seasonNumber, savedAt: new Date().toISOString().substr(0, 16)})
-                localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
-  
-                //vuex
-                store.dispatch('showData/actionSetSelectedSeason', seasonData)
+                //   seasonNumber = data.season_number
+                //   seasonEpisodes = data.episodes.length
+                //   console.log(numberOfEpisodes)
+                //   airDate = data.air_date
+    
+                  //save to localStorage
+                  console.log(selectedShow.value.id)
+                  console.log(selectedShow.value.name)
+                  localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: seasonNumber, episodes: data.episodes, searchString: "show" + selectedShow.value.id + "season" + seasonNumber, savedAt: new Date().toISOString().substr(0, 16)})
+                  localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
+    
+                  //vuex
+                  store.dispatch('showData/actionSetSelectedSeason', seasonData)
             })
 
             console.log("season#" + season + " data fetched from API")
@@ -324,15 +347,49 @@ export default {
               return true
           }
       }
+
+      async function selectedSeasonOpacityStyling(season, numberOfEpisodes)
+      {
+        // reduce opacity on not selected seasons
+          var selectedDiv = document.getElementById("season#" + season)
+          // console.log(season)
+          // console.log(selectedDiv)
+          // console.log("season#" + season)
+          var seasons = document.getElementsByClassName("season")
+          var seasonSpecials = document.getElementById("season#" + [0])
+
+          if(seasonSpecials != null)
+          {
+              // console.log(seasonSpecials)
+
+              for(var c = 0; c < seasons.length; c++)
+              {
+                  document.getElementById("season#" + [c]).style.opacity = "50%"
+              }
+          }
+          else
+          {
+              for(var c = 1; c <= seasons.length; c++)
+              {
+                  document.getElementById("season#" + [c]).style.opacity = "50%"
+              }
+          }
+
+          if(selectedDiv != null)
+          {
+            selectedDiv.style.opacity = "100%"
+          } 
+      }
        
       return {
-        testVar,
         //variables
+        // showId,
         showInfo,
-        // seasonInfo,
-        count,
-        selectedShow,
-        selectedSeason,
+        seasonInfo,
+        seasonInfoRefs,
+        // count,
+        // selectedShow,
+        // selectedSeason,
         // // vuexSelectedSeason: selectedSeason,
         // vuexSelectedEpisode: selectedEpisode,
         // vuexCounter: counter,
@@ -342,6 +399,7 @@ export default {
         //functions
         // fetchShow,
         fetchShowSeason,
+        // incrementCounter
       }
     }
 }
@@ -407,7 +465,7 @@ export default {
   #showDescription 
   {
     padding-top: 0px;
-    width: 700px;
+    width: ;
     opacity: 75%;
   }
 

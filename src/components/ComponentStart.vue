@@ -6,26 +6,12 @@
         <!-- {{ selectedShow }}  -->
         <div id="scrollBarShows">
             <div class="show">
-                <router-link to="/asdf">
+                <router-link to="/asdf/1389123">
                     <img v-bind:src="''">
                 </router-link>
+
+                <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
             </div>
-            <div v-on:click="fetchShowData(456)" class="show">
-                <!-- <router-link to="/"> -->
-                    <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'">
-                <!-- </router-link> -->
-            </div>
-            <div v-on:click="fetchShowData(69740)" class="show">
-                <!-- <router-link to="/"> -->
-                    <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'">
-                <!-- </router-link> -->
-            </div>
-            <div v-on:click="fetchShowData(60059)" class="show">
-                <!-- <router-link to="/"> -->
-                    <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'">
-                <!-- </router-link> -->
-            </div>
-            <!-- <router-view></router-view> -->
       </div>
     </div>
   </div>
@@ -88,7 +74,7 @@ export default {
                 let checkLocalStorage = JSON.stringify(localStorageData)
                 if(checkLocalStorage.includes('ShowId=' + data.id))
                 {
-                console.log("show exist in localStorage")
+                    console.log("show exist in localStorage")
                 }
                 else
                 {

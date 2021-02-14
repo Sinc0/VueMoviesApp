@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 //components
 import Start from '../views/viewStart.vue'
-import Show from '../views/viewShow.vue'
-import Asdf from '../views/viewAsdf.vue'
+// import Show from '../views/viewShow.vue'
+import Show from '../views/viewAsdf.vue'
 
 const routes = [
   //start
@@ -13,16 +13,16 @@ const routes = [
     component: Start,
   },
   //show
-  {
-    path: '/show',
-    name: 'show',
-    component: Show,
-  },
+  // {
+  //   path: '/show',
+  //   name: 'show',
+  //   component: Show,
+  // },
   //asdf
   {
-    path: '/asdf',
-    name: 'asdf',
-    component: Asdf,
+    path: '/show/:showId',
+    name: 'show',
+    component: Show,
   }
 ]
 
