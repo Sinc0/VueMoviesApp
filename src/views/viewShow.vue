@@ -1,19 +1,22 @@
 <template>
   <div class="show">
-    <Seasons />
-    <Episodes />
+    <ComponentFetchShowData />,
+    <ComponentSeasons />,
+    <ComponentEpisodes />
   </div>
 </template>
 
 <script>
-import Seasons from '@/components/ComponentSeasons.vue' // @ is an alias to /src
-import Episodes from '@/components/ComponentEpisodes.vue'
+import ComponentFetchShowData from '@/components/ComponentFetchShowData.vue' // @ is an alias to /src
+import ComponentSeasons from '@/components/ComponentSeasons.vue'
+import ComponentEpisodes from '@/components/ComponentEpisodes.vue'
 
 export default {
-  name: 'Show',
+  name: 'viewShow',
   components: {
-    Seasons,
-    Episodes
+    ComponentFetchShowData,
+    ComponentSeasons,
+    ComponentEpisodes
   }
 }
 </script>

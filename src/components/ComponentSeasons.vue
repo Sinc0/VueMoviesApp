@@ -12,23 +12,36 @@
     <!-- {{showInfo.data.data.number_of_episodes}} -->
     <!-- {{seasonInfoRefs.data}} -->
 
-    <div id="showInfo" v-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
+    <div id="showInfo" v-if="showInfo.data && showInfo.data.data.poster_path"> <!-- v-if="showInfo.data.id == showId" -->
       <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
       <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
       <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
       <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
       <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
-      <p v-if="showInfo.data" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
-      <p v-if="showInfo.data" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
-      <p v-if="showInfo.data" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
+      <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
+    </div>
+    
+    <div id="showInfoPosterMissing" v-else-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
+      <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
+      <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
+      <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
+      <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
+      <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
       <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
       <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
     </div>
 
-    <div id="scrollBarSeasons" v-if="showInfo.data">
+    <div id="scrollBarSeasons" v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0">
       <div v-on:click="fetchShowSeason(showInfo.data.id, season.season_number)" v-for="season in showInfo.data.data.seasons.slice().reverse()" v-bind:key="season.id" class="season" v-bind:id="'season#' + season.season_number">
         <p><b>{{season.name}}</b></p>
         <img v-if="season.poster_path" v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
+        <img v-else v-bind:src="''" class="seasonImageMissing">
       </div>
     </div>
 
@@ -409,7 +422,7 @@ export default {
 <style scoped>
   #showInfo {
     margin: auto;
-    margin-top: 5px;
+    margin-top: 0px;
     margin-bottom: 15px;
     padding: 10px;
     min-height: 235px;
@@ -424,6 +437,27 @@ export default {
     margin: 0px;
     padding-bottom: 5px;
     padding-left: 155px;
+  }
+
+  #showInfoPosterMissing
+  {
+    margin: auto;
+    margin-top: 0px;
+    margin-bottom: 15px;
+    padding: 10px;
+    min-height: 235px;
+    width: calc(1000px - 20px);
+    text-align: left;
+    color: white;
+    background-color: black;
+  }
+
+  #showInfoPosterMissing p
+  {
+    margin: 0px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    /* padding-left: 155px; */
   }
 
   #showNameLink
@@ -450,7 +484,7 @@ export default {
     float: left;
     margin: 0px;
     margin-left: -30px;
-    margin-top: -35px;
+    margin-top: -47px;
     padding: 0px;
     height: 260px;
     width: 170px;
@@ -472,8 +506,9 @@ export default {
   #scrollBarSeasons 
   {
     margin: auto;
+    margin-bottom: -18px;
     overflow-y: hidden;
-    overflow-x: scroll;
+    overflow-x: auto;
     white-space: nowrap;
     width: 1000px;
   }
@@ -499,7 +534,7 @@ export default {
     /* width: 500px; */
     /* opacity: 50%; */
     border: 1px solid gray;
-    background-color: #FED90F;
+    background-color: #FED90F; /* alternative colors: #35495E */
   }
 
   .seasonImage 
@@ -508,10 +543,28 @@ export default {
     margin-top: 10px;
     padding: 0px;
   }
+
+  .seasonImageMissing
+  {
+    margin: 0px;
+    margin-top: 10px;
+    padding: 0px;
+    padding-bottom: 87px;
+  }
   
+  /* width */
   ::-webkit-scrollbar {
-    /* display: none; */
-    
+    height: 15px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background-color: #FED90F;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background-color: black;
   }
 
   @media screen and (max-width: 1024px) {

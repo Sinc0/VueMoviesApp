@@ -86,15 +86,28 @@ export default {
                     console.log("show saved to localStorage")
                 }
 
+                //refresh episode list
+                undisplayEpisodeList()
+
                 //vuex
                 console.log("show#" + id + " data fetched from API")
 
                 store.dispatch('showData/actionSetSelectedShow', showData)
                 store.dispatch('showData/actionSetCounter', 1)
 
-                //                //router
+                //router
                 // router.push('/show')
             })
+        }
+
+        function undisplayEpisodeList()
+        {
+            var episodeList = document.getElementById("selectedSeasonEpisodes")
+            
+            if(episodeList != null)
+            {
+                episodeList.style.display = "none"
+            }
         }
 
         return {

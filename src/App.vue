@@ -35,7 +35,7 @@ export default {
 }
 
 body {
-  background-color: white;
+  background-color: #41B883;
 }
 
 @media screen and (max-width: 1024px) {

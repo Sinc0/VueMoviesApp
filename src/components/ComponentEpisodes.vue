@@ -46,10 +46,13 @@ export default {
         //lifecycle
         onUpdated(() => {
           console.log("episodes updated")
-          var d = document.getElementsByClassName("episodeDetail").length
-          // console.log(d)
           
-          collapseAllEpisodes(d)
+          //display episode list
+          displayEpisodeList()
+
+          //collapse episodes
+          var numberOfEpisodes = document.getElementsByClassName("episodeDetail").length
+          collapseAllEpisodes(numberOfEpisodes)
         })
 
         async function fetchEpisodeDetails(season, episode) 
@@ -129,6 +132,16 @@ export default {
             }
         }
 
+        function displayEpisodeList()
+        {
+          var selectedSeasonEpisodes = document.getElementById("selectedSeasonEpisodes")
+          
+          if(selectedSeasonEpisodes != null)
+          {
+              selectedSeasonEpisodes.style.display = "block"
+          }
+        }
+
         function collapseAllEpisodes(numberOfEpisodes)
         {
           for(var c = 0; c < numberOfEpisodes; c++)
@@ -161,6 +174,7 @@ export default {
     margin: auto;
     margin-top: 0px;
     width: 1000px;
+    border-top: 1px solid black;
   }
 
   #seasonTitle
@@ -197,7 +211,7 @@ export default {
 
   .episode:hover
   {
-    background-color: #feda0fc2;
+    background-color: #f5e06b;
   }
 
   .episodeTitle

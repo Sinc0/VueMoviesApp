@@ -8,7 +8,7 @@
 import ComponentStart from '@/components/ComponentStart.vue'
 
 export default {
-  name: 'Start',
+  name: 'viewStart',
   components: {
       ComponentStart
   }
