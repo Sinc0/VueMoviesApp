@@ -50,7 +50,6 @@ export default createStore({
       //actions
       actions: {   
         actionSetSelectedSeason ({commit}, value) {
-          console.log(value)
           commit('mutationSetSelectedSeason', value)
         },
         

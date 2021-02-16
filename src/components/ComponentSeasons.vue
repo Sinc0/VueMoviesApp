@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <div id="showInfo" v-if="showInfo.data && showInfo.data.data.poster_path"> <!-- v-if="showInfo.data.id == showId" -->
       <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
       <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
@@ -69,17 +69,17 @@ export default {
       const seasonInfoRefs = toRefs(seasonInfo)
 
       watch(seasonInfoRefs.data, (newValue, oldValue) => {
-        console.log("season#" + seasonInfoRefs.data.value.season + " selected")
-        console.log("old value: " + oldValue + " new value: " + newValue)
-        console.log(seasonInfoRefs.data.value)
+        // console.log("season#" + seasonInfoRefs.data.value.season + " selected")
+        // console.log("old value: " + oldValue + " new value: " + newValue)
+        // console.log(seasonInfoRefs.data.value)
 
         selectedSeasonOpacityStyling(seasonInfoRefs.data.value.season)
       })
 
       async function fetchShowSeason(show, season)
       {
-          console.log(show)
-          console.log(season)
+          // console.log(show)
+          // console.log(season)
 
           var seasonData = null
           var showId = show
@@ -107,9 +107,9 @@ export default {
                       {
                           seasonData = s
 
-                          console.log("data from localStorage")
-                          console.log(seasonData)
-                          console.log(seasonData.savedAt)
+                          // console.log("data from localStorage")
+                          // console.log(seasonData)
+                          // console.log(seasonData.savedAt)
                           // console.log(newDate)
                       }
                   })
@@ -143,25 +143,24 @@ export default {
         
         await fetch(url, {method: 'get'})
             .then((response) => {
+                  console.log("season#" + season + " data fetched from API")
                   return response.json()
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 
                 //set variables
                 seasonData = {showId: selectedShow.value.id, showName: selectedShow.value.name, season: data.season_number, episodes: data.episodes}
     
                 //save to localStorage
-                console.log(selectedShow.value.id)
-                console.log(selectedShow.value.name)
+                // console.log(selectedShow.value.id)
+                // console.log(selectedShow.value.name)
                 localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: seasonNumber, episodes: data.episodes, searchString: "show" + selectedShow.value.id + "season" + seasonNumber, savedAt: new Date().toISOString().substr(0, 16)})
                 localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
   
                 //vuex
                 store.dispatch('showData/actionSetSelectedSeason', seasonData)
             })
-
-            console.log("season#" + season + " data fetched from API")
       }
 
       function DateValidation(date1, date2)
@@ -183,7 +182,7 @@ export default {
           // console.log(formattedDate2)
 
           let difference = Math.abs(formattedDate1 - formattedDate2)
-          console.log(100 - difference + " minutes left until next API fetch")
+          // console.log(100 - difference + " minutes left until next API fetch")
 
           //data was fetched more than 60 minutes ago
           if(difference > 100)
@@ -244,7 +243,7 @@ export default {
 <style scoped>
   #showInfo {
     margin: auto;
-    margin-top: 0px;
+    margin-top: 35px;
     margin-bottom: 15px;
     padding: 10px;
     min-height: 235px;

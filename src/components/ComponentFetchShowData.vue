@@ -1,9 +1,5 @@
 <template>
   <div>
-    <!-- {{$route.params}} -->
-    <!-- {{showTest}} -->
-    <!-- {{count}} -->
-    <!-- {{showData}} -->
   </div>
 </template>
 
@@ -17,7 +13,7 @@ export default {
     setup()
     {
         let showId = useRouter().currentRoute.value.params.showId
-        console.log(showId)
+        // console.log(showId)
 
         // vuex
         const store = useStore()
@@ -39,14 +35,15 @@ export default {
         
             await fetch(url, {method: 'get'})
             .then((response) => {
+                  console.log("show#" + id + " data fetched from API")
                   return response.json()
             })
             .then((data) => {
-                console.log(data)
+                // console.log(data)
                 
                 //set variables
                 showData = {id: data.id, name: data.name, data: data}
-                console.log(showData)
+                // console.log(showData)
   
                 // save to localStorage
                 let ls = localStorage.getItem("savedShows")
@@ -70,9 +67,7 @@ export default {
                 undisplayEpisodeList()
 
                 //vuex
-                console.log("show#" + id + " data fetched from API")
                 store.dispatch('showData/actionSetSelectedShow', showData)
-                store.dispatch('showData/actionSetCounter', 1)
             })
         }
 

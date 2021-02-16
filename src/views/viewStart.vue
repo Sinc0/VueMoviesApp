@@ -1,5 +1,5 @@
 <template>
-  <div class="start">
+  <div id="viewStart">
     <ComponentStart />
   </div>
 </template>
@@ -14,3 +14,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  #viewStart
+  {
+    margin: 0px;
+    padding: 0px;
+    min-height: 1000px;
+  }
+</style>

@@ -32,7 +32,7 @@ export default {
 
         //lifecycle
         onUpdated(() => {
-          console.log("episodes updated")
+          console.log("episode list updated")
           
           //display episode list
           displayEpisodeList()
@@ -44,8 +44,8 @@ export default {
 
         async function fetchEpisodeDetails(season, episode) 
         {
-            console.log(season)
-            console.log(episode)
+            // console.log(season)
+            // console.log(episode)
            
             var episodeTitle = document.getElementById('season#' + season + 'episode#' + episode + 'Title')
             var episodeDetails = document.getElementById('season#' + season + 'episode#' + episode + 'Details')
@@ -78,7 +78,7 @@ export default {
           {
             var z = document.getElementsByClassName("episodeDetail")[c].id
             var e = document.getElementById(z)
-            // console.log(e)
+
             e.style.display = "none"
           }
         }

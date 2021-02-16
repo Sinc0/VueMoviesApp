@@ -1,7 +1,9 @@
 <template>
-  <div class="show">
-    <ComponentFetchShowData />,
-    <ComponentSeasons />,
+  <div id="viewShow">
+    <ComponentFetchShowData />
+    <br />
+    <ComponentSeasons />
+    <br />
     <ComponentEpisodes />
   </div>
 </template>
@@ -20,3 +22,12 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  #viewShow
+  {
+    margin: 0px;
+    padding: 0px;
+    min-height: 1000px;
+  }
+</style>
