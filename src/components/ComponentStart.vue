@@ -2,8 +2,9 @@
   <div>
     <!-- search -->
     <!-- <h3 id="searchHeaderText">Search</h3> -->
+    <!-- {{searchType.value}} -->
     <div id="searchBox">
-        <form v-on:submit="searchShows(searchString.value)" onsubmit="return false;">
+        <form v-on:submit="searchShows(searchString.value, searchType.value)" onsubmit="return false;">
             <div id="searchBar">
                 <!-- <select id="searchBarSelectBox">
                     <option value="tv">Shows</option>
@@ -11,7 +12,7 @@
                 </select> -->
                 <p v-on:click="searchBarChangeType()" id="searchBarSelectBox">Shows</p>
                 <input id="searchBarInput" v-on:keyup="setSearchString()" placeholder="">
-                <p v-on:click="searchShows(searchString.value)" id="searchBarSubmitButton">Submit</p>
+                <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Submit</p>
             </div>
         </form>
 
@@ -23,8 +24,9 @@
                 </div>
             </div>
             <!-- <router-link v-for="hit in searchShowsResult.data.results.slice(0,9)" v-bind:key="hit.id" :to="'/show/' + hit.id"><p class="searchHit">{{hit.title}}</p>{{hit.id}} - {{hit.title}} [{{hit.release_date.substr(0,4)}}]</router-link> -->
-            <p>searchString: {{searchString.value}}</p>
-            <p>total hits: {{searchShowsResult.data.total_results}}</p>
+            <!-- <p>searchString: {{searchString.value}}</p> -->
+            <!-- <p>total hits: {{searchShowsResult.data.total_results}}</p> -->
+            <h3 v-if="searchShowsResult.data.total_results == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></h3>
             <!-- <p>total displayed: 10 </p> -->
         </div>
     </div>
@@ -123,10 +125,22 @@ export default {
         //variables
         var searchShowsResult = reactive({data: null})
         var searchString = reactive({value: null})
+        var searchType = reactive({value: "Shows"})
 
-        async function searchShows(queryString)
+        async function searchShows(queryString, queryType)
         {
-            var url = "https://api.themoviedb.org/3/search/tv?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
+            var urlMovies = "https://api.themoviedb.org/3/search/movie?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
+            var urlShows = "https://api.themoviedb.org/3/search/tv?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
+            var url = null
+
+            if(queryType == "Movies")
+            {
+                url = urlMovies
+            }
+            else if(queryType == "Shows")
+            {
+                url = urlShows
+            }
 
             await fetch(url, {method: 'get'})
             .then((response) => {
@@ -136,6 +150,8 @@ export default {
             .then((data) => {
                 console.log(data)
                 searchShowsResult.data = data
+
+                //reset search bar text
                 document.getElementById("searchBarInput").value = ""
             })
 
@@ -147,6 +163,23 @@ export default {
             searchString.value = searchStringFromUser
         }
 
+        function searchBarChangeType()
+        {
+            var searchTypeButton = document.getElementById("searchBarSelectBox")
+            // console.log(searchTypeButton)
+
+            if(searchTypeButton.innerText == "Shows")
+            {
+                searchType.value = "Movies"
+                searchTypeButton.innerText = "Movies"
+            }
+            else if(searchTypeButton.innerText == "Movies")
+            {
+                searchType.value = "Shows"
+                searchTypeButton.innerText = "Shows"
+            }
+        }
+
         function test()
         {
             console.log("test")
@@ -156,10 +189,12 @@ export default {
             //variables
             searchShowsResult,
             searchString,
+            searchType,
 
             //functions
             searchShows,
             setSearchString,
+            searchBarChangeType,
             test
         }
     }
@@ -167,14 +202,6 @@ export default {
 </script>
 
 <style scoped>
-    h3 
-    {
-        margin: 0px;
-        margin-top: 30px;
-        padding: 0px;
-        color: black;
-    }
-
     img
     {
         height: 100%;
@@ -200,7 +227,7 @@ export default {
     .show
     {
         display: inline-block;
-        margin-top: 10px;
+        margin-top: 6px;
         margin-right: 15px;
         height: 305px;
         width: 205px;
@@ -210,7 +237,7 @@ export default {
     .hit
     {
         display: inline-block;
-        margin-top: 10px;
+        margin-top: 0px;
         margin-right: 15px;
         height: 305px;
         width: 205px;
@@ -219,7 +246,13 @@ export default {
 
     .sliderCategory
     {
-        
+        margin: 0px;
+        margin: auto;
+        margin-top: 30px;
+        padding: 0px;
+        width: 1000px;
+        color: black;
+        /* background-color: white; */
     }
 
     #searchHeaderText
@@ -321,6 +354,17 @@ export default {
     #searchBox input::placeholder
     {
         color: white;
+    }
+
+    #searchNoResultsFound
+    {
+        margin: auto;
+        margin-top: -10px;
+        padding: 0px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 700px;
+        background-color: white;
     }
 
     .searchHit
