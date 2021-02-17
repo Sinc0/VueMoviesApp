@@ -309,7 +309,7 @@ export default {
     padding: 0px;
     height: 260px;
     width: 170px;
-    border: 1px solid black;
+    /* border: 1px solid black; */
   }
 
   #showStatus
@@ -401,7 +401,7 @@ export default {
         padding: 0px;
         height: 260px;
         width: 170px;
-        border: 1px solid black;
+        /* border: 1px solid black; */
     }
 
     #showInfo {

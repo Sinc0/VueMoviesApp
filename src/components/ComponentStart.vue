@@ -3,6 +3,9 @@
     <!-- search -->
     <!-- <h3 id="searchHeaderText">Search</h3> -->
     <!-- {{searchType.value}} -->
+    <!-- {{getRecentlySearched}} -->
+    <!-- {{recentlySearched}} -->
+    <!-- <button v-on:click="displaySearchBox()">searchBox</button> -->
     <div id="searchBox">
         <form v-on:submit="searchShows(searchString.value, searchType.value)" onsubmit="return false;">
             <div id="searchBar">
@@ -16,13 +19,21 @@
             </div>
         </form>
 
+        <div v-if="searchShowsResult.data || getRecentlySearched" id="scrollBarSearch">
+            <!-- <h3 class="sliderCategory">Search</h3>  -->
+            <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
+                <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
+                <p class="saveShow">save</p>
+            </div>
+        </div>
+
         <div v-if="searchShowsResult.data" id="searchResults">
-            <div id="scrollBarSearch">
+            <!-- <div id="scrollBarSearch">
                 <div v-for="hit in searchShowsResult.data.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                     <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
                     <p class="saveShow">save</p>
                 </div>
-            </div>
+            </div> -->
             <!-- <router-link v-for="hit in searchShowsResult.data.results.slice(0,9)" v-bind:key="hit.id" :to="'/show/' + hit.id"><p class="searchHit">{{hit.title}}</p>{{hit.id}} - {{hit.title}} [{{hit.release_date.substr(0,4)}}]</router-link> -->
             <!-- <p>searchString: {{searchString.value}}</p> -->
             <!-- <p>total hits: {{searchShowsResult.data.total_results}}</p> -->
@@ -123,9 +134,24 @@ import router from '../router'
 export default {
     setup() {
         //variables
+        var localStorageRecentlySearched = localStorage.getItem('recentlySearched')
+        localStorageRecentlySearched = JSON.parse(localStorageRecentlySearched)
+        // console.log(localStorageRecentlySearched.data)
         var searchShowsResult = reactive({data: null})
         var searchString = reactive({value: null})
         var searchType = reactive({value: "Shows"})
+        // var recentlySearched = reactive({value: "Recently Searched"})
+
+        //vuex
+        const store = useStore() //same as this.$store
+        const getRecentlySearched = computed(() => { return store.getters['showData/recentlySearched']})
+        if(localStorageRecentlySearched != null)
+        {
+            var temp = localStorageRecentlySearched
+            console.log("temp")
+            console.log(temp)
+            store.dispatch('showData/actionSetRecentlySearched', temp)
+        }
 
         async function searchShows(queryString, queryType)
         {
@@ -150,6 +176,19 @@ export default {
             .then((data) => {
                 console.log(data)
                 searchShowsResult.data = data
+
+                //save to recently searched variable
+                // recentlySearched.value = computed(() => { return store.getters['showData/recentlySearched']})
+                // console.log("recentlySearched")
+                // console.log(recentlySearched)
+
+                //save to local storage
+                var rs = []
+                rs.push(JSON.stringify(data))
+                localStorage.setItem('recentlySearched', rs)
+
+                //save to vuex
+                store.dispatch('showData/actionSetRecentlySearched', data)
 
                 //reset search bar text
                 document.getElementById("searchBarInput").value = ""
@@ -190,6 +229,10 @@ export default {
             searchShowsResult,
             searchString,
             searchType,
+            // recentlySearched,
+
+            //vuex
+            getRecentlySearched,
 
             //functions
             searchShows,
@@ -212,7 +255,7 @@ export default {
     {
         margin: auto;
         /* margin-top: 20vh; */
-        padding-bottom: 0px;
+        padding-bottom: 8px;
         overflow-y: hidden;
         overflow-x: auto;
         white-space: nowrap;
@@ -221,7 +264,7 @@ export default {
 
     #scrollBarSearch
     {
-        padding-bottom: 8px;
+        padding-bottom: 16px;
     }
 
     .show
@@ -237,7 +280,7 @@ export default {
     .hit
     {
         display: inline-block;
-        margin-top: 0px;
+        margin-top: 13px;
         margin-right: 15px;
         height: 305px;
         width: 205px;
@@ -262,9 +305,13 @@ export default {
 
     #searchBox
     {
+        margin: 0px;
         margin: auto;
-        margin-top: 10px;
+        padding: 0px;
+        padding-top: 12px;
         width: 1000px;
+        /* opacity: 75%; */
+        /* background-color: black; */
     }
     
     #searchBar
@@ -364,7 +411,9 @@ export default {
         padding-top: 10px;
         padding-bottom: 10px;
         width: 700px;
-        background-color: white;
+        font-weight: bold;
+        color: white;
+        /* background-color: white; */
     }
 
     .searchHit

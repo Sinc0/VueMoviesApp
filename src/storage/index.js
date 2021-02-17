@@ -1,7 +1,7 @@
 import { createStore } from 'vuex'
 
 export default createStore({
-  //default
+  //global
   state: {
   },
   getters: {
@@ -21,6 +21,7 @@ export default createStore({
         selectedShow: null,
         selectedSeason: null,
         selectedEpisode: null,
+        recentlySearched: null
       },
       
       //getters
@@ -32,6 +33,10 @@ export default createStore({
         selectedShow(state)
         {
           return state.selectedShow
+        },
+        recentlySearched(state)
+        {
+          return state.recentlySearched
         }
       },
 
@@ -43,6 +48,10 @@ export default createStore({
         
         mutationSetSelectedShow (state, value) {
           state.selectedShow = value
+        },
+        
+        mutationSetRecentlySearched (state, value) {
+          state.recentlySearched = value
         }
         
       },
@@ -55,6 +64,11 @@ export default createStore({
         
         actionSetSelectedShow ({commit}, value) {
           commit('mutationSetSelectedShow', value)
+        },
+
+        actionSetRecentlySearched ({commit}, value)
+        {
+          commit('mutationSetRecentlySearched', value)
         }
       }
       

@@ -137,6 +137,7 @@ export default {
 
   .episode:hover
   {
+    cursor: pointer;
     background-color: #f5e06b;
   }
 
