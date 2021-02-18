@@ -19,7 +19,9 @@
             </div>
         </form>
 
-        <div v-if="searchShowsResult.data || getRecentlySearched" id="scrollBarSearch">
+        <div id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search Results</div>
+
+        <div v-if="getRecentlySearched != null" id="scrollBarSearch">
             <!-- <h3 class="sliderCategory">Search</h3>  -->
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
@@ -41,7 +43,7 @@
             <!-- <p>total displayed: 10 </p> -->
         </div>
     </div>
-
+        
     <!-- movies -->
     <h3 class="sliderCategory">Movies</h3>
     <div id="scrollBarMovies">
@@ -127,7 +129,7 @@
 </template>
 
 <script>
-import {ref, reactive, computed} from 'vue'
+import {ref, reactive, computed, onUpdated, onMounted} from 'vue'
 import {useStore} from 'vuex'
 import router from '../router'
 
@@ -152,6 +154,16 @@ export default {
             console.log(temp)
             store.dispatch('showData/actionSetRecentlySearched', temp)
         }
+
+        //lifecycle hooks
+        onMounted(() => {
+            var clearSearchResultsDiv = document.getElementById("clearSearchResults")
+
+            if(getRecentlySearched.value != null)
+            {
+                clearSearchResultsDiv.style.display = "block"
+            }
+        })
 
         async function searchShows(queryString, queryType)
         {
@@ -192,6 +204,9 @@ export default {
 
                 //reset search bar text
                 document.getElementById("searchBarInput").value = ""
+
+                //show clear search
+                document.getElementById("clearSearchResults").style.display = "block"
             })
 
         }
@@ -219,6 +234,24 @@ export default {
             }
         }
 
+        function clearSearchResults()
+        {
+            var searchBox = document.getElementById("scrollBarSearch")
+            var ls = localStorage.setItem('recentlySearched', null)
+            store.dispatch('showData/actionSetRecentlySearched', null)
+
+            if(searchBox.style.display == "none")
+            {
+                searchBox.style.display = "block"
+            }
+            else
+            {
+                searchBox.style.display = "none"
+            }
+
+            document.getElementById("clearSearchResults").style.display = "none"
+        }
+
         function test()
         {
             console.log("test")
@@ -238,6 +271,7 @@ export default {
             searchShows,
             setSearchString,
             searchBarChangeType,
+            clearSearchResults,
             test
         }
     }
@@ -458,6 +492,21 @@ export default {
     {
         cursor: pointer;
         color: white;
+        background-color: black;
+    }
+
+    #clearSearchResults
+    {
+        display: none;
+        margin: 0px;
+        margin: auto;
+        padding: 10px;
+        width: 676px;
+        font-weight: bold;
+        color: white;
+        border-bottom: 2px solid white;
+        border-left: 2px solid white;
+        border-right: 2px solid white;
         background-color: black;
     }
 
