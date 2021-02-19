@@ -6,6 +6,7 @@
     <!-- {{getRecentlySearched}} -->
     <!-- {{recentlySearched}} -->
     <!-- <button v-on:click="displaySearchBox()">searchBox</button> -->
+    <!-- {{getFollowedShows}} -->
     <div id="searchBox">
         <form v-on:submit="searchShows(searchString.value, searchType.value)" onsubmit="return false;">
             <div id="searchBar">
@@ -19,13 +20,13 @@
             </div>
         </form>
 
-        <div id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search Results</div>
+        <div id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search</div>
 
         <div v-if="getRecentlySearched != null" id="scrollBarSearch">
-            <!-- <h3 class="sliderCategory">Search</h3>  -->
+            <h3 class="sliderCategory">Search Hits</h3> 
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
-                <p class="saveShow">save</p>
+                <p v-on:click="followShow(hit)" class="saveShow">follow</p>
             </div>
         </div>
 
@@ -43,51 +44,28 @@
             <!-- <p>total displayed: 10 </p> -->
         </div>
     </div>
-        
-    <!-- movies -->
-    <h3 class="sliderCategory">Movies</h3>
-    <div id="scrollBarMovies">
+    
+    <!-- shows -->
+    <h3 class="sliderCategory">Followed Shows</h3>
+    <!-- <div id="scrollBarShows">
         <div class="show">
             <router-link to="/show/456"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
+            <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'">
         </div>
-        <div class="show">
-            <router-link to="/show/132"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
+    </div> -->
+    <div v-if="getFollowedShows != null" id="scrollBarShows" class="sliderCategory">
+        <!-- <h3 class="sliderCategory">Search</h3>  -->
+        <div v-for="show in getFollowedShows" v-bind:key="show.id" class="show">
+            <p v-if="show.data.status == 'Ended' || show.data.next_episode_to_air == null" id="followedShowsStatus">{{show.data.status}}</p>
+            <p v-if="show.data.status != 'Ended' && show.data.next_episode_to_air != null" id="followedShowsNextEpisode">Next Air: {{show.data.next_episode_to_air.air_date}}</p>
+            <router-link v-bind:to="'/show/' + show.data.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + show.data.poster_path" /></router-link>
+            <p v-on:click="unfollowShow(show)" class="unfollowShow">unfollow</p>
         </div>
     </div>
-
-    <!-- shows -->
-    <h3 class="sliderCategory">Shows</h3>
-    <div id="scrollBarShows">
+        
+    <!-- movies -->
+    <h3 class="sliderCategory">Followed Movies</h3>
+    <div id="scrollBarMovies">
         <div class="show">
             <router-link to="/show/456"><img v-bind:src="''"></router-link>
             <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
@@ -154,6 +132,7 @@ export default {
             console.log(temp)
             store.dispatch('showData/actionSetRecentlySearched', temp)
         }
+        const getFollowedShows = computed(() => { return store.getters['showData/followedShows']})
 
         //lifecycle hooks
         onMounted(() => {
@@ -163,6 +142,9 @@ export default {
             {
                 clearSearchResultsDiv.style.display = "block"
             }
+
+            //load followed shows
+            loadFollowedShows()
         })
 
         async function searchShows(queryString, queryType)
@@ -211,6 +193,54 @@ export default {
 
         }
 
+        async function fetchFullShowData(id)
+        {
+            var showData = null
+            var seasonData = null
+            var seasonNumber = null
+            var showNumber = id
+            var numberOfEpisodes = null
+            var airDate = null
+            var localStorageData = []
+            var url = "https://api.themoviedb.org/3/tv/" + id + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
+        
+            await fetch(url, {method: 'get'})
+            .then((response) => {
+                  console.log("show#" + id + " data fetched from API")
+                  return response.json()
+            })
+            .then((data) => {
+                // console.log(data)
+                
+                //set variables
+                showData = data
+                // showData = {id: data.id, name: data.name, data: data}
+                // console.log(showData)
+  
+                // save to localStorage
+                let ls = localStorage.getItem("savedShows")
+                if(ls)
+                {
+                    localStorageData = JSON.parse(ls)
+                }
+                let checkLocalStorage = JSON.stringify(localStorageData)
+                if(checkLocalStorage.includes('ShowId=' + data.id))
+                {
+                    console.log("show exist in localStorage")
+                }
+                else
+                {
+                    localStorageData.push({id: data.id, name: data.name, data: data, searchString: 'ShowId=' + data.id})
+                    localStorage.setItem("savedShows", JSON.stringify(localStorageData))
+                    console.log("show saved to localStorage")
+                }
+
+            })
+
+            return showData
+        }
+
+
         function setSearchString()
         {
             var searchStringFromUser = document.getElementById("searchBarInput").value
@@ -252,6 +282,54 @@ export default {
             document.getElementById("clearSearchResults").style.display = "none"
         }
 
+        async function followShow(show)
+        {
+            console.log(show.id)
+            console.log(show)
+            
+            //variables
+            var followedShows = []
+
+            //fetch full show data
+            var fullShowData = await fetchFullShowData(show.id)
+            console.log(fullShowData)
+
+            //get from local storage
+            var ls = JSON.parse(localStorage.getItem('followedShows'))
+            console.log(ls)
+            if(ls != null)
+            {
+                followedShows = ls
+            }
+
+            //save to local storage
+            if(JSON.stringify(followedShows).includes("FollowedShow" + show.id))
+            {
+                //do nothing
+                console.log("show is already followed")
+            }
+            else
+            {
+                followedShows.push({showId: fullShowData.id, type: "show", searchString: "FollowedShow" + fullShowData.id, data: fullShowData})
+                localStorage.setItem('followedShows', JSON.stringify(followedShows))
+            }
+
+            //save to vuex
+            store.dispatch('showData/actionSetFollowedShows', followedShows)
+        }
+
+        function loadFollowedShows()
+        {
+            var followedShows = []
+            var ls = JSON.parse(localStorage.getItem('followedShows'))
+            console.log(ls)
+            if(ls != null)
+            {
+                followedShows = ls
+            }
+            store.dispatch('showData/actionSetFollowedShows', followedShows)
+        }
+
         function test()
         {
             console.log("test")
@@ -266,12 +344,14 @@ export default {
 
             //vuex
             getRecentlySearched,
+            getFollowedShows,
 
             //functions
             searchShows,
             setSearchString,
             searchBarChangeType,
             clearSearchResults,
+            followShow,
             test
         }
     }
@@ -289,7 +369,7 @@ export default {
     {
         margin: auto;
         /* margin-top: 20vh; */
-        padding-bottom: 8px;
+        padding-bottom: 16px;
         overflow-y: hidden;
         overflow-x: auto;
         white-space: nowrap;
@@ -314,7 +394,7 @@ export default {
     .hit
     {
         display: inline-block;
-        margin-top: 13px;
+        margin-top: 6px;
         margin-right: 15px;
         height: 305px;
         width: 205px;
@@ -480,12 +560,26 @@ export default {
         margin: 0px;
         margin-top: -4px;
         padding: 0px;
-        padding-top: 4px;
-        padding-bottom: 4px;
+        padding-top: 8px;
+        padding-bottom: 8px;
         /* height: 30px; */
         font-weight: bold;
         color: black;
         background-color: green;
+    }
+
+    .unfollowShow
+    {
+        margin: 0px;
+        margin-top: -4px;
+        padding: 0px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        /* height: 30px; */
+        opacity: 99%;
+        font-weight: bold;
+        color: black;
+        background-color: red;
     }
 
     .saveShow:hover
@@ -507,6 +601,18 @@ export default {
         border-bottom: 2px solid white;
         border-left: 2px solid white;
         border-right: 2px solid white;
+        background-color: black;
+    }
+
+    #followedShowsStatus, #followedShowsNextEpisode
+    {
+        margin: 0px;
+        padding: 0px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        /* height: 30px; */
+        font-weight: bold;
+        color: white;
         background-color: black;
     }
 

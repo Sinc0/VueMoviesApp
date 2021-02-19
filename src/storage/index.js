@@ -21,7 +21,8 @@ export default createStore({
         selectedShow: null,
         selectedSeason: null,
         selectedEpisode: null,
-        recentlySearched: null
+        recentlySearched: null,
+        followedShows: null
       },
       
       //getters
@@ -37,7 +38,11 @@ export default createStore({
         recentlySearched(state)
         {
           return state.recentlySearched
-        }
+        },
+        followedShows(state)
+        {
+          return state.followedShows
+        },
       },
 
       //mutations
@@ -52,6 +57,10 @@ export default createStore({
         
         mutationSetRecentlySearched (state, value) {
           state.recentlySearched = value
+        },
+
+        mutationSetFollowedShows (state, value) {
+          state.followedShows = value
         }
         
       },
@@ -69,7 +78,12 @@ export default createStore({
         actionSetRecentlySearched ({commit}, value)
         {
           commit('mutationSetRecentlySearched', value)
-        }
+        },
+
+        actionSetFollowedShows ({commit}, value)
+        {
+          commit('mutationSetFollowedShows', value)
+        },
       }
       
     }
