@@ -24,7 +24,7 @@
         <div id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search</div>
 
         <div v-if="getRecentlySearched != null" id="scrollBarSearch">
-            <h3 class="sliderCategory">Search Hits</h3> 
+            <!-- <h3 class="sliderCategory">Search Hits</h3>  -->
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <div v-if="hit.first_air_date != null">
                     <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
@@ -36,6 +36,8 @@
                 </div>
             </div>
         </div>
+        
+
 
         <div v-if="searchShowsResult.data" id="searchResults">
             <!-- <div id="scrollBarSearch">
@@ -461,7 +463,16 @@ export default {
 
     #scrollBarSearch
     {
-        padding-bottom: 16px;
+        margin: 0px;
+        margin-top: -2px;
+        padding: 0px;
+        padding-bottom: 24px;
+        padding-left: 7px;
+        padding-top: 10px;
+        width: 100%;
+        border-top: 2px solid white;
+        border-bottom: 2px solid white;
+        background-color: black;
     }
 
     .show, .movie
@@ -506,7 +517,7 @@ export default {
         margin: auto;
         padding: 0px;
         padding-top: 12px;
-        width: 1000px;
+        /* width: 1000px; */
         /* opacity: 75%; */
         /* background-color: black; */
     }
@@ -597,7 +608,7 @@ export default {
 
     #searchBox input::placeholder
     {
-        color: white;
+        /* color: white; */
     }
 
     #searchNoResultsFound
@@ -709,13 +720,13 @@ export default {
 
         /* Track */
         ::-webkit-scrollbar-track {
-            background-color: #41B883;
+            background-color: black; /* 41B883 */
         }
 
         /* Handle */
         ::-webkit-scrollbar-thumb {
             margin-top: 10px;
-            background-color: black;
+            background-color: white;
         }
 
 </style>

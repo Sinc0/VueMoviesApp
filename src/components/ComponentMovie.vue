@@ -3,7 +3,7 @@
     <div v-if="selectedMovie && selectedMovie.data.status_code != 34" id="movieInfo">
       <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + selectedMovie.data.poster_path" id="moviePoster" />
       <p v-if="selectedMovie.data.title" id="movieNameText"><b>{{selectedMovie.data.title}}</b></p>
-      <p v-if="selectedMovie.data.original_title">original title: {{selectedMovie.data.original_title}}</p>
+      <p v-if="selectedMovie.data.original_title != selectedMovie.data.title">original title: {{selectedMovie.data.original_title}}</p>
       <p v-if="selectedMovie.data.status" id="movieStatus">status: {{selectedMovie.data.status}}</p>
       <p v-if="selectedMovie.data.release_date">release date: {{selectedMovie.data.release_date}}</p>
       <p v-if="selectedMovie.data.runtime">duration: {{selectedMovie.data.runtime}} mins</p>
