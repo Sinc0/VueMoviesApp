@@ -53,7 +53,7 @@
     </div>
     
     <!-- shows -->
-    <div v-if="getFollowedShows != null" id="scrollBarShows" class="sliderCategory">
+    <div v-if="getFollowedShows != null && getFollowedShows.length != 0" id="scrollBarShows" class="sliderCategory">
         <h3 class="sliderCategory">Followed Shows</h3>
         <div v-for="show in getFollowedShows" v-bind:key="show.id" class="show">
             <p v-if="show.data.status == 'Ended' || show.data.next_episode_to_air == null" id="followedShowsStatus">{{show.data.status}}</p>
@@ -215,7 +215,6 @@ export default {
             return showData
         }
 
-
         function setSearchString()
         {
             var searchStringFromUser = document.getElementById("searchBarInput").value
@@ -292,8 +291,7 @@ export default {
             //save to vuex
             store.dispatch('showData/actionSetFollowedShows', followedShows)
         }
-
-        
+     
         async function followMovie(movie)
         {
             console.log(movie.id)
@@ -328,6 +326,34 @@ export default {
 
             //save to vuex
             store.dispatch('showData/actionSetFollowedMovies', followedMovies)
+        }
+
+        async function unfollowShow(show)
+        {
+            console.log(show.data.id)
+            // console.log(show)
+            
+            //variables
+            var followedShows = []
+
+            //get from local storage
+            var ls = JSON.parse(localStorage.getItem('followedShows'))
+            // console.log(ls)
+            if(ls != null)
+            {
+                followedShows = ls
+            }
+
+            //save to local storage
+            if(JSON.stringify(followedShows).includes("FollowedShow" + show.data.id))
+            {
+                const filter = followedShows.filter(movie => movie.searchString != "FollowedShow" + show.data.id);
+                followedShows = filter
+                localStorage.setItem('followedShows', JSON.stringify(followedShows))
+            }
+
+            //save to vuex
+            store.dispatch('showData/actionSetFollowedShows', followedShows)
         }
 
         function loadFollowedShows()
@@ -378,6 +404,7 @@ export default {
             clearSearchResults,
             followShow,
             followMovie,
+            unfollowShow,
             test
         }
     }
