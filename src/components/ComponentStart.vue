@@ -65,7 +65,7 @@
         
     <!-- movies -->
     <div id="scrollBarMovies">
-        <div v-if="getFollowedMovies != null" id="scrollBarMovies" class="sliderCategory">
+        <div v-if="getFollowedMovies != null && getFollowedMovies.length != 0" id="scrollBarMovies" class="sliderCategory">
             <h3 class="sliderCategory">Followed Movies</h3>
             <div v-for="movie in getFollowedMovies" v-bind:key="movie.id" class="movie">
                 <!-- <p v-if="movie.data.status == 'Ended' || movie.data.next_episode_to_air == null" id="followedMovieStatus">{{movie.data.status}}</p> -->
@@ -328,7 +328,7 @@ export default {
             store.dispatch('showData/actionSetFollowedMovies', followedMovies)
         }
 
-        async function unfollowShow(show)
+        function unfollowShow(show)
         {
             console.log(show.data.id)
             // console.log(show)
@@ -347,13 +347,42 @@ export default {
             //save to local storage
             if(JSON.stringify(followedShows).includes("FollowedShow" + show.data.id))
             {
-                const filter = followedShows.filter(movie => movie.searchString != "FollowedShow" + show.data.id);
+                const filter = followedShows.filter(s => s.searchString != "FollowedShow" + show.data.id);
                 followedShows = filter
                 localStorage.setItem('followedShows', JSON.stringify(followedShows))
             }
 
             //save to vuex
             store.dispatch('showData/actionSetFollowedShows', followedShows)
+        }
+
+        function unfollowMovie(movie)
+        {
+            console.log(movie.data.id)
+            // console.log(movie)
+            
+            //variables
+            var followedMovies = []
+
+            //get from local storage
+            var ls = JSON.parse(localStorage.getItem('followedMovies'))
+            // console.log(ls)
+            if(ls != null)
+            {
+                followedMovies = ls
+            }
+            console.log(followedMovies)
+            //save to local storage
+            if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.data.id))
+            {
+                const filter = followedMovies.filter(m => m.searchString != "FollowedMovie" + movie.data.id);
+                console.log(movie)
+                followedMovies = filter
+                localStorage.setItem('followedMovies', JSON.stringify(followedMovies))
+            }
+
+            // save to vuex
+            store.dispatch('showData/actionSetFollowedMovies', followedMovies)
         }
 
         function loadFollowedShows()
@@ -405,6 +434,7 @@ export default {
             followShow,
             followMovie,
             unfollowShow,
+            unfollowMovie,
             test
         }
     }
