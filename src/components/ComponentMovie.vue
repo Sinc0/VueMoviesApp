@@ -6,7 +6,7 @@
       <p v-if="selectedMovie.data.original_title">original title: {{selectedMovie.data.original_title}}</p>
       <p v-if="selectedMovie.data.status" id="movieStatus">status: {{selectedMovie.data.status}}</p>
       <p v-if="selectedMovie.data.release_date">release date: {{selectedMovie.data.release_date}}</p>
-      <p v-if="selectedMovie.data.runtime">duration: {{selectedMovie.data.runtime}}</p>
+      <p v-if="selectedMovie.data.runtime">duration: {{selectedMovie.data.runtime}} mins</p>
       <p v-if="selectedMovie.data.overview" id="movieDescription">description: {{selectedMovie.data.overview}}</p>
     </div>
     <div v-if="selectedMovie && selectedMovie.data.status_code == 34">

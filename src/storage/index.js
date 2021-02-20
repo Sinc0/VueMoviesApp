@@ -23,7 +23,8 @@ export default createStore({
         selectedEpisode: null,
         recentlySearched: null,
         followedShows: null,
-        selectedMovie: null
+        selectedMovie: null,
+        followedMovies: null
       },
       
       //getters
@@ -48,6 +49,10 @@ export default createStore({
         {
           return state.selectedMovie
         },
+        followedMovies(state)
+        {
+          return state.followedMovies
+        }
       },
 
       //mutations
@@ -55,7 +60,7 @@ export default createStore({
         mutationSetSelectedSeason (state, value) {
           state.selectedSeason = value
         },
-        
+
         mutationSetSelectedShow (state, value) {
           state.selectedShow = value
         },
@@ -70,6 +75,10 @@ export default createStore({
 
         mutationSetSelectedMovie (state, value) {
           state.selectedMovie = value
+        },
+
+        mutationSetFollowedMovies (state, value) {
+          state.followedMovies = value
         }
         
       },
@@ -98,6 +107,11 @@ export default createStore({
         {
           commit('mutationSetSelectedMovie', value)
         },
+
+        actionSetFollowedMovies({commit}, value)
+        {
+          commit('mutationSetFollowedMovies', value)
+        }
       }
       
     }

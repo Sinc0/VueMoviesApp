@@ -7,6 +7,7 @@
     <!-- {{recentlySearched}} -->
     <!-- <button v-on:click="displaySearchBox()">searchBox</button> -->
     <!-- {{getFollowedShows}} -->
+    <!-- {{getFollowedMovies}} -->
     <div id="searchBox">
         <form v-on:submit="searchShows(searchString.value, searchType.value)" onsubmit="return false;">
             <div id="searchBar">
@@ -25,8 +26,14 @@
         <div v-if="getRecentlySearched != null" id="scrollBarSearch">
             <h3 class="sliderCategory">Search Hits</h3> 
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
-                <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
-                <p v-on:click="followShow(hit)" class="saveShow">follow</p>
+                <div v-if="hit.first_air_date != null">
+                    <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
+                    <p v-on:click="followShow(hit)" class="followShow">follow</p>
+                </div>
+                <div v-if="hit.first_air_date == null">
+                    <router-link v-bind:to="'/movie/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
+                    <p v-on:click="followMovie(hit)" class="followMovie">follow</p>
+                </div>
             </div>
         </div>
 
@@ -46,15 +53,8 @@
     </div>
     
     <!-- shows -->
-    <h3 class="sliderCategory">Followed Shows</h3>
-    <!-- <div id="scrollBarShows">
-        <div class="show">
-            <router-link to="/show/456"><img v-bind:src="''"></router-link>
-            <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'">
-        </div>
-    </div> -->
     <div v-if="getFollowedShows != null" id="scrollBarShows" class="sliderCategory">
-        <!-- <h3 class="sliderCategory">Search</h3>  -->
+        <h3 class="sliderCategory">Followed Shows</h3>
         <div v-for="show in getFollowedShows" v-bind:key="show.id" class="show">
             <p v-if="show.data.status == 'Ended' || show.data.next_episode_to_air == null" id="followedShowsStatus">{{show.data.status}}</p>
             <p v-if="show.data.status != 'Ended' && show.data.next_episode_to_air != null" id="followedShowsNextEpisode">Next Air: {{show.data.next_episode_to_air.air_date}}</p>
@@ -64,43 +64,15 @@
     </div>
         
     <!-- movies -->
-    <h3 class="sliderCategory">Followed Movies</h3>
     <div id="scrollBarMovies">
-        <div class="show">
-            <router-link to="/show/456"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/132"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
-        </div>
-        <div class="show">
-            <router-link to="/show/457"><img v-bind:src="''"></router-link>
-            <!-- <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jlJ8nDhMhCYJuzOw3f52CP1W8MW.jpg'"> -->
+        <div v-if="getFollowedMovies != null" id="scrollBarMovies" class="sliderCategory">
+            <h3 class="sliderCategory">Followed Movies</h3>
+            <div v-for="movie in getFollowedMovies" v-bind:key="movie.id" class="movie">
+                <!-- <p v-if="movie.data.status == 'Ended' || movie.data.next_episode_to_air == null" id="followedMovieStatus">{{movie.data.status}}</p> -->
+                <!-- <p v-if="movie.data.status != 'Ended' && movie.data.next_episode_to_air != null" id="followedMovieNextEpisode">Next Air: {{movie.data.next_episode_to_air.air_date}}</p> -->
+                <router-link v-bind:to="'/movie/' + movie.data.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + movie.data.poster_path" /></router-link>
+                <p v-on:click="unfollowMovie(movie)" class="unfollowMovie">unfollow</p>
+            </div>
         </div>
     </div>
   </div>
@@ -133,6 +105,7 @@ export default {
             store.dispatch('showData/actionSetRecentlySearched', temp)
         }
         const getFollowedShows = computed(() => { return store.getters['showData/followedShows']})
+        const getFollowedMovies = computed(() => { return store.getters['showData/followedMovies']})
 
         //lifecycle hooks
         onMounted(() => {
@@ -143,8 +116,10 @@ export default {
                 clearSearchResultsDiv.style.display = "block"
             }
 
-            //load followed shows
+            //load followed
             loadFollowedShows()
+            loadFollowedMovies()
+            
         })
 
         async function searchShows(queryString, queryType)
@@ -318,6 +293,43 @@ export default {
             store.dispatch('showData/actionSetFollowedShows', followedShows)
         }
 
+        
+        async function followMovie(movie)
+        {
+            console.log(movie.id)
+            console.log(movie)
+            
+            //variables
+            var followedMovies = []
+
+            //fetch full show data
+            // var fullMovieData = await fetchFullShowData(show.id)
+            // console.log(fullMovieData)
+
+            //get from local storage
+            var ls = JSON.parse(localStorage.getItem('followedMovies'))
+            console.log(ls)
+            if(ls != null)
+            {
+                followedMovies = ls
+            }
+
+            //save to local storage
+            if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.id))
+            {
+                //do nothing
+                console.log("movie is already followed")
+            }
+            else
+            {
+                followedMovies.push({movieId: movie.id, type: "movie", searchString: "FollowedMovie" + movie.id, data: movie})
+                localStorage.setItem('followedMovies', JSON.stringify(followedMovies))
+            }
+
+            //save to vuex
+            store.dispatch('showData/actionSetFollowedMovies', followedMovies)
+        }
+
         function loadFollowedShows()
         {
             var followedShows = []
@@ -328,6 +340,18 @@ export default {
                 followedShows = ls
             }
             store.dispatch('showData/actionSetFollowedShows', followedShows)
+        }
+
+        function loadFollowedMovies()
+        {
+            var followedMovies = []
+            var ls = JSON.parse(localStorage.getItem('followedMovies'))
+            console.log(ls)
+            if(ls != null)
+            {
+                followedMovies = ls
+            }
+            store.dispatch('showData/actionSetFollowedMovies', followedMovies)
         }
 
         function test()
@@ -345,6 +369,7 @@ export default {
             //vuex
             getRecentlySearched,
             getFollowedShows,
+            getFollowedMovies,
 
             //functions
             searchShows,
@@ -352,6 +377,7 @@ export default {
             searchBarChangeType,
             clearSearchResults,
             followShow,
+            followMovie,
             test
         }
     }
@@ -381,7 +407,7 @@ export default {
         padding-bottom: 16px;
     }
 
-    .show
+    .show, .movie
     {
         display: inline-block;
         margin-top: 6px;
@@ -490,7 +516,7 @@ export default {
         margin-right: -1px;
     }
 
-    #searchBarSubmitButton:hover
+    #searchBarSubmitButton:active, #searchBarSubmitButton:hover
     {
         color: black;
         background-color: white;
@@ -541,11 +567,11 @@ export default {
         background-color: rgb(218, 213, 213);
     }
 
-    .searchHit:hover
+    /* .searchHit:hover
     {
         color: white;
         background-color: black;
-    }
+    } */
 
     .searchHitImage
     {
@@ -555,7 +581,7 @@ export default {
         width: 150px;
     }
 
-    .saveShow
+    .followShow, .followMovie
     {
         margin: 0px;
         margin-top: -4px;
@@ -568,7 +594,7 @@ export default {
         background-color: green;
     }
 
-    .unfollowShow
+    .unfollowShow, .unfollowMovie
     {
         margin: 0px;
         margin-top: -4px;
@@ -582,7 +608,7 @@ export default {
         background-color: red;
     }
 
-    .saveShow:hover
+    .followShow:active, .followShow:hover
     {
         cursor: pointer;
         color: white;
