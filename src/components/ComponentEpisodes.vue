@@ -166,11 +166,12 @@ export default {
 
   @media screen and (max-width: 1024px) {
   #selectedSeasonEpisodes {
-      width: 100%;
+      width: 94vw;
   }
 
   .episode {
-    width: 96vw;
+    margin: auto;
+    width: 94vw;
   }
 
   .episode p {

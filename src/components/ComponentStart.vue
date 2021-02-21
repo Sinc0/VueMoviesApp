@@ -17,7 +17,7 @@
                 </select> -->
                 <p v-on:click="searchBarChangeType()" id="searchBarSelectBox">Shows</p>
                 <input id="searchBarInput" v-on:keyup="setSearchString()" placeholder="">
-                <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Submit</p>
+                <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Search</p>
             </div>
         </form>
 
@@ -28,19 +28,19 @@
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <div v-if="hit.first_air_date != null">
                     <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
-                    <p v-on:click="followShow(hit)" class="followShow">follow</p>
+                    <p v-on:click="followShow(hit)" class="followShow">Follow</p>
                 </div>
                 <div v-if="hit.first_air_date == null">
                     <router-link v-bind:to="'/movie/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
-                    <p v-on:click="followMovie(hit)" class="followMovie">follow</p>
+                    <p v-on:click="followMovie(hit)" class="followMovie">Follow</p>
                 </div>
             </div>
             
-            <h3 v-if="getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></h3>
+            <p v-if="getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></p>
         </div>
         
         
-        <div  id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search</div>
+        <div  id="clearSearchResults" v-on:click="clearSearchResults()">Clear</div>
 
         <div v-if="searchShowsResult.data" id="searchResults">
             <!-- <div id="scrollBarSearch">
@@ -58,25 +58,25 @@
     </div>
     
     <!-- shows -->
-    <div v-if="getFollowedShows != null && getFollowedShows.length != 0" id="scrollBarShows" class="sliderCategory">
-        <h3 class="sliderCategory">Followed Shows</h3>
-        <div v-for="show in getFollowedShows" v-bind:key="show.id" class="show">
+    <h3 v-if="getFollowedShows != 0" class="sliderCategory">Followed Shows</h3>
+    <div v-if="getFollowedShows != null && getFollowedShows != 0" id="scrollBarShows" class="sliderCategory">
+        <div v-for="show in getFollowedShows.slice().reverse()" v-bind:key="show.id" class="show">
             <p v-if="show.data.status == 'Ended' || show.data.next_episode_to_air == null" id="followedShowsStatus">{{show.data.status}}</p>
             <p v-if="show.data.status != 'Ended' && show.data.next_episode_to_air != null" id="followedShowsNextEpisode">Next Air: {{show.data.next_episode_to_air.air_date}}</p>
             <router-link v-bind:to="'/show/' + show.data.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + show.data.poster_path" /></router-link>
-            <p v-on:click="unfollowShow(show)" class="unfollowShow">unfollow</p>
+            <p v-on:click="unfollowShow(show)" class="unfollowShow">Unfollow</p>
         </div>
     </div>
         
     <!-- movies -->
     <div id="scrollBarMovies">
+        <h3 v-if="getFollowedMovies != 0" class="sliderCategory">Followed Movies</h3>
         <div v-if="getFollowedMovies != null && getFollowedMovies.length != 0" id="scrollBarMovies" class="sliderCategory">
-            <h3 class="sliderCategory">Followed Movies</h3>
-            <div v-for="movie in getFollowedMovies" v-bind:key="movie.id" class="movie">
+            <div v-for="movie in getFollowedMovies.slice().reverse()" v-bind:key="movie.id" class="movie">
                 <!-- <p v-if="movie.data.status == 'Ended' || movie.data.next_episode_to_air == null" id="followedMovieStatus">{{movie.data.status}}</p> -->
                 <!-- <p v-if="movie.data.status != 'Ended' && movie.data.next_episode_to_air != null" id="followedMovieNextEpisode">Next Air: {{movie.data.next_episode_to_air.air_date}}</p> -->
                 <router-link v-bind:to="'/movie/' + movie.data.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + movie.data.poster_path" /></router-link>
-                <p v-on:click="unfollowMovie(movie)" class="unfollowMovie">unfollow</p>
+                <p v-on:click="unfollowMovie(movie)" class="unfollowMovie">Unfollow</p>
             </div>
         </div>
     </div>
@@ -124,7 +124,8 @@ export default {
             //load followed
             loadFollowedShows()
             loadFollowedMovies()
-            
+
+            document.getElementById("header").style.display = "none"
         })
 
         async function searchShows(queryString, queryType)
@@ -502,6 +503,11 @@ export default {
         opacity: 75%;
     }
 
+    .hit:hover
+    {
+        opacity: 100%;
+    }
+
     .sliderCategory
     {
         margin: 0px;
@@ -523,7 +529,7 @@ export default {
         margin: 0px;
         margin: auto;
         padding: 0px;
-        padding-top: 12px;
+        padding-top: 35px;
         /* width: 1000px; */
         /* opacity: 75%; */
         /* background-color: black; */
@@ -593,8 +599,8 @@ export default {
 
     #searchBarSubmitButton:active, #searchBarSubmitButton:hover
     {
-        color: black;
-        background-color: white;
+        /* color: black; */
+        /* background-color: white; */
     }
 
     /* #searchBarSubmitButton
@@ -625,7 +631,9 @@ export default {
         padding: 0px;
         padding-top: 10px;
         width: 681px;
-        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 27px;
+        /* font-weight: bold; */
         color: white;
         background-color: black;
     }
@@ -678,15 +686,21 @@ export default {
         /* height: 30px; */
         opacity: 99%;
         font-weight: bold;
-        color: black;
+        color: white;
+        background-color: black;
+    }
+    
+    .unfollowShow:hover, .unfollowShow:active, .unfollowMovie:hover, .unfollowMovie:active
+    {
+        cursor: pointer;
         background-color: red;
     }
 
     .followShow:active, .followShow:hover
     {
         cursor: pointer;
-        color: white;
-        background-color: black;
+        /* color: white;
+        background-color: black; */
     }
 
     #clearSearchResults
@@ -735,4 +749,91 @@ export default {
             background-color: white;
         }
 
+  @media screen and (max-width: 1024px) {
+      #header
+      {
+          display: none;
+      }
+      
+      .sliderCategory
+      {
+          width: 92vw;;
+      }
+
+      #scrollBarShows, #scrollBarMovies
+      {
+          width: 92vw;;
+          /* background-color: black; */
+      }
+
+      #scrollBarSearch
+      {
+          width: 92vw;
+      }
+
+      #searchBox
+      {
+          /* margin: 0px; */
+          padding: 0px;
+          padding-top: 3vw;
+      }
+
+      #searchBar
+      {
+          margin: auto;
+          width: 94vw;
+          border: 0px;
+      }
+
+      #clearSearchResults
+      {
+          width: 88vw;
+          border: 0px;
+          border-bottom: 2px solid white;
+      }
+
+      #searchBarInput
+      {
+          /* margin-left: -2px; */
+          width: 92vw;
+          border: 0px;
+          border-top: 2px solid white;
+          border-bottom: 2px solid white;
+      }
+
+      #searchBarSelectBox, #searchBarSubmitButton
+      {
+          margin: auto;
+          display: block;
+          text-align: center;
+      }
+
+      #searchBarSubmitButton
+      {
+          width: 93.5vw;
+          border-bottom: 2px solid white;
+      }
+
+      #searchBarSelectBox
+      {
+          width: 100%;
+          border-top: 2px solid white;
+      }
+
+    ::-webkit-scrollbar {
+        display: none;
+        margin-top: 10px;
+        height: 7px;
+    }
+
+    .sliderCategory
+    {
+        /* color: white; */
+    }
+
+    #searchNoResultsFound
+    {
+        width: 92vw;
+    }
+  }
 </style>

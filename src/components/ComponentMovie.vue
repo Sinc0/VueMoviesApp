@@ -3,11 +3,11 @@
     <div v-if="selectedMovie && selectedMovie.data.status_code != 34" id="movieInfo">
       <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + selectedMovie.data.poster_path" id="moviePoster" />
       <p v-if="selectedMovie.data.title" id="movieNameText"><b>{{selectedMovie.data.title}}</b></p>
-      <p v-if="selectedMovie.data.original_title != selectedMovie.data.title">original title: {{selectedMovie.data.original_title}}</p>
+      <p v-if="selectedMovie.data.original_title != selectedMovie.data.title" id="movieOriginalNameText">original title: {{selectedMovie.data.original_title}}</p>
       <p v-if="selectedMovie.data.status" id="movieStatus">status: {{selectedMovie.data.status}}</p>
-      <p v-if="selectedMovie.data.release_date">release date: {{selectedMovie.data.release_date}}</p>
-      <p v-if="selectedMovie.data.runtime">duration: {{selectedMovie.data.runtime}} mins</p>
-      <p v-if="selectedMovie.data.overview" id="movieDescription">description: {{selectedMovie.data.overview}}</p>
+      <p v-if="selectedMovie.data.release_date" id="movieReleaseDate">released: {{selectedMovie.data.release_date}}</p>
+      <p v-if="selectedMovie.data.runtime" id="movieDuration">duration: {{selectedMovie.data.runtime}} mins</p>
+      <p v-if="selectedMovie.data.overview" id="movieDescription">{{selectedMovie.data.overview}}</p>
     </div>
     <div v-if="selectedMovie && selectedMovie.data.status_code == 34">
       <p id="errorMessage"><b>No movie with that id exist</b></p>
@@ -24,6 +24,20 @@ export default {
       //vuex
       const store = useStore() //same as this.$store
       const selectedMovie = computed(() => { return store.getters['showData/selectedMovie']})
+      
+      //lifecycle hooks
+      onMounted(() => {
+        if(screen.width < 1024)
+        {
+          document.getElementById("header").style.display = "block" //display header
+        }
+        else
+        {
+          document.getElementById("header").style.display = "none" //display header
+        }
+        
+        window.scrollTo(0,0); //reset scroll to top
+      })
 
       return {
         //vuex
@@ -47,11 +61,18 @@ export default {
     background-color: black;
   }
 
-  #movieInfo p
+  /* #movieInfo p
   {
     margin: 0px;
     padding-bottom: 5px;
     padding-left: 155px;
+  } */
+  
+  #movieNameText, #movieOriginalNameText, #movieStatus, #movieReleaseDate, #movieDuration, #movieDescription
+  {
+    margin: 0px;
+    padding-bottom: 5px;
+    padding-left: 155px
   }
 
   #movieInfoPosterMissing
@@ -123,4 +144,61 @@ export default {
     color: black;
   }
 
+  @media screen and (max-width: 1024px) {
+    #movieInfo
+    {
+      margin: 0px;
+      margin: auto;
+      margin-top: 1vh;
+      margin-bottom: 1.5vh;
+      padding: 0px;
+      padding-bottom: 10px;
+      padding-left: 10px;
+      padding-right: 10px;
+      width: 88vw;
+    }
+
+    #moviePoster 
+    {
+      position: relative;
+      z-index: 1;
+      float: none;
+      margin: 0px;
+      margin-left: -4vw;
+      /* margin-top: 10px; */
+      padding: 0px;
+      height: 80vh;
+      width: 96vw;
+    }
+
+    #movieNameText, #movieOriginalNameText, #movieStatus, #movieReleaseDate, #movieDuration, #movieDescription
+    {
+      margin: 0px;
+      padding: 0px;
+      text-align: center;
+    }
+
+    #movieNameText, #movieOriginalNameText
+    {
+      display: none;
+      padding-top: 10px;
+    }
+
+    #movieStatus
+    {
+      padding-top: 10px;
+    }
+
+    #movieDescription
+    {
+      padding-top: 17px;
+    }
+
+    #movieDescription
+    {
+      margin: auto;
+      padding-bottom: 10px;
+      width: 90%;
+    }
+  }
 </style>

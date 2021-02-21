@@ -30,4 +30,13 @@ export default {
     padding: 0px;
     min-height: 1000px;
   }
+
+  @media screen and (max-width: 1024px) {
+    #viewShow
+    {
+      margin: 0px;
+      padding: 0px;
+      min-height: 0px;
+    }
+  }
 </style>

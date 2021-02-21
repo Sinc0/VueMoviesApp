@@ -68,12 +68,26 @@ export default {
 
       const seasonInfoRefs = toRefs(seasonInfo)
 
+      //lifecycle hooks
       watch(seasonInfoRefs.data, (newValue, oldValue) => {
         // console.log("season#" + seasonInfoRefs.data.value.season + " selected")
         // console.log("old value: " + oldValue + " new value: " + newValue)
         // console.log(seasonInfoRefs.data.value)
 
         selectedSeasonOpacityStyling(seasonInfoRefs.data.value.season)
+      })
+            
+      onMounted(() => {
+        if(screen.width < 1024)
+        {
+          document.getElementById("header").style.display = "block" //display header
+        }
+        else
+        {
+          document.getElementById("header").style.display = "none" //display header
+        }
+        
+        window.scrollTo(0,0); //reset scroll to top
       })
 
       async function fetchShowSeason(show, season)
@@ -255,9 +269,21 @@ export default {
 
   #showInfo p
   {
-    margin: 0px;
+    /* margin: 0px;
     padding-bottom: 5px;
+    padding-left: 155px; */
+  }
+
+  #showStatus, #showNumberOfEpisodes, #showNumberOfSeasons, #showLastEpisode, #showNextEpisode, #showDescription, #showHomePage, #showNameText
+  {
+    margin: 0px;
+    padding: 0px;
     padding-left: 155px;
+  }
+
+  #showHomePage, #showDescription
+  {
+    padding-top: 10px;
   }
 
   #showInfoPosterMissing
@@ -312,14 +338,8 @@ export default {
     /* border: 1px solid black; */
   }
 
-  #showStatus
-  {
-    padding-top: ;
-  }
-
   #showDescription 
   {
-    padding-top: 0px;
     width: ;
     opacity: 75%;
   }
@@ -393,56 +413,69 @@ export default {
     {
         display: block;
         position: relative;
-        float: none;
+        /* float: none; */
         margin: 0px;
-        margin: auto;
-        margin-top: 20px;
-        margin-bottom: 23px;
+        margin-left: -1%;
+        margin-top: -12px;
+        margin-bottom: 20px;
         padding: 0px;
-        height: 260px;
-        width: 170px;
+        height: 80vh;
+        width: 96vw;
         /* border: 1px solid black; */
     }
 
     #showInfo {
-      margin-bottom: 23px;
-      margin-left: -1px;
-      width: 90vw;
+      margin: 0px;
+      margin: auto;
+      margin-bottom: 10px;
+      padding: 0px;
+      width: 94vw;
     }
 
     #showInfo p
     {
-      margin: 0px;
-      padding-bottom: 0px;
-      padding-left: 0px;
+      /* margin: 0px;
+      padding: 0px; */
       text-align: center;
     }
 
-    #showNameLink, #showNameText
+    #showNameLink, #showNameText, #showHomePage
     {
       display: none;
     }
     
+    #showStatus, #showNumberOfEpisodes, #showNumberOfSeasons, #showLastEpisode, #showNextEpisode, #showDescription, #showHomePage, #showNameText
+    {
+      margin: 0px;
+      padding: 0px;
+      padding-left: 0px;
+    }
+
     #showStatus
     {
-      padding-top: 7px;
+      /* padding-top: 20px; */
     }
 
     #showDescription {
-      padding-top: 27px;
-      width: 100%;
+      margin: auto;
+      padding-top: 17px;
+      padding-bottom: 20px;
+      width: 90%;
     }
 
     .season {
       margin: 0px;
-      margin-right: 7px;
-      margin-bottom: 7px;
+      margin-right: 10px;
+      margin-bottom: 10px;
     }
 
     #scrollBarSeasons 
     {
-      margin-left: -1px;
-      width: 96vw;
+      width: 94vw;
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
     }
   }
 </style>

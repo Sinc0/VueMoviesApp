@@ -1,8 +1,8 @@
 <template>
   <div id="nav">
-    <!-- <div id="header">
-      <router-link to="/"><h1 id="backArrow">‹</h1></router-link>
-    </div> -->
+    <div id="header">
+      <router-link to="/"><h1 id="backArrow">&nbsp;‹</h1></router-link>
+    </div>
     <router-view />
     <div id="footer">x</div>
   </div>
@@ -43,6 +43,7 @@ export default {
 
 #header 
 {
+  display: none;
   position: relative;
   margin: 0px;
   margin-top: -7px;
@@ -67,7 +68,7 @@ body {
   position: relative;
   bottom: 0;
   margin: 0px;
-  margin-top: 75px;
+  margin-top: 10px;
   /* margin-left: -17px; */
   padding: 0px;
   width: 100%;
@@ -79,11 +80,12 @@ body {
 {
   margin: 0px;
   padding: 0px;
-  padding-left: 15px;
-  font-size: 40px;
+  width: 100vw;
+  font-size: 20px;
   text-align: left;
   /* opacity: 70%; */
   color: black;
+  background-color: white;
 }
 
 a
@@ -91,13 +93,39 @@ a
   text-decoration: none;
 }
 
+/*** scrollbar ***/
+    
+    /* width */
+    ::-webkit-scrollbar {
+        /* margin-top: 10px; */
+        /* height: 7px; */
+        width: 3px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background-color: black; /* #41B883 */
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        /* margin-top: 10px; */
+        background-color: white;
+    }
+
 @media screen and (max-width: 1024px) {
   #nav {
     padding: 0px;
   }
 
+  #header {
+    display: block;
+    margin: 0px;
+    padding: 0px;
+  }
+
   body {
-    background-color: black;
+    /* background-color: black; */
   }
 }
 </style>
