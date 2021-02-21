@@ -21,7 +21,7 @@
             </div>
         </form>
 
-        <div id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search</div>
+        
 
         <div v-if="getRecentlySearched != null" id="scrollBarSearch">
             <!-- <h3 class="sliderCategory">Search Hits</h3>  -->
@@ -35,9 +35,12 @@
                     <p v-on:click="followMovie(hit)" class="followMovie">follow</p>
                 </div>
             </div>
+            
+            <h3 v-if="getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></h3>
         </div>
         
-
+        
+        <div  id="clearSearchResults" v-on:click="clearSearchResults()">Clear Search</div>
 
         <div v-if="searchShowsResult.data" id="searchResults">
             <!-- <div id="scrollBarSearch">
@@ -49,7 +52,7 @@
             <!-- <router-link v-for="hit in searchShowsResult.data.results.slice(0,9)" v-bind:key="hit.id" :to="'/show/' + hit.id"><p class="searchHit">{{hit.title}}</p>{{hit.id}} - {{hit.title}} [{{hit.release_date.substr(0,4)}}]</router-link> -->
             <!-- <p>searchString: {{searchString.value}}</p> -->
             <!-- <p>total hits: {{searchShowsResult.data.total_results}}</p> -->
-            <h3 v-if="searchShowsResult.data.total_results == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></h3>
+            
             <!-- <p>total displayed: 10 </p> -->
         </div>
     </div>
@@ -450,7 +453,7 @@ export default {
         width: 100%;
     }
 
-    #scrollBarShows, #scrollBarMovies, #scrollBarSearch
+    #scrollBarShows, #scrollBarMovies
     {
         margin: auto;
         /* margin-top: 20vh; */
@@ -464,12 +467,16 @@ export default {
     #scrollBarSearch
     {
         margin: 0px;
+        margin: auto;
         margin-top: -2px;
         padding: 0px;
         padding-bottom: 24px;
         padding-left: 7px;
         padding-top: 10px;
-        width: 100%;
+        overflow-y: hidden;
+        overflow-x: auto;
+        white-space: nowrap;
+        /* width: 100%; */
         border-top: 2px solid white;
         border-bottom: 2px solid white;
         background-color: black;
@@ -564,7 +571,7 @@ export default {
         padding-left: 0px;
         padding-top: 10px;
         padding-right: 1px;
-        height: ;
+        /* height: ; */
         width: 10%;
         vertical-align: top;
         text-align: center;
@@ -613,15 +620,14 @@ export default {
 
     #searchNoResultsFound
     {
+        margin: 0px;
         margin: auto;
-        margin-top: -10px;
         padding: 0px;
         padding-top: 10px;
-        padding-bottom: 10px;
-        width: 700px;
+        width: 681px;
         font-weight: bold;
         color: white;
-        /* background-color: white; */
+        background-color: black;
     }
 
     .searchHit
