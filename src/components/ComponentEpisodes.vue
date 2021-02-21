@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="selectedSeason" id="selectedSeasonEpisodes">
-      <div v-on:click="fetchEpisodeDetails(selectedSeason.season, episode.episode_number)" v-for="episode in selectedSeason.episodes" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number">
+      <div v-on:click="fetchEpisodeDetails(selectedSeason.season, episode.episode_number)" v-for="episode in selectedSeason.episodes.slice().reverse()" v-bind:key="episode.episode_number" class="episode" v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number">
         <p v-bind:id="'episode#' + episode.episode_number + 'Title'" class="episodeTitle"><b>#{{episode.episode_number}} • {{episode.air_date}} • {{episode.name}}</b></p>
 
         <div v-bind:id="'season#' + selectedSeason.season + 'episode#' + episode.episode_number + 'Details'" class="episodeDetail">
