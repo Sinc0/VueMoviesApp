@@ -4,6 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Start from '../views/viewStart.vue'
 import Show from '../views/viewShow.vue'
 import Movie from '../views/viewMovie.vue'
+import About from '../views/viewAbout.vue'
+import Credits from '../views/viewCredits.vue'
 
 const routes = [
   //start
@@ -23,6 +25,18 @@ const routes = [
     path: '/show/:showId',
     name: 'show',
     component: Show,
+  },
+  //about
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+  },
+  //credits
+  {
+    path: '/credits',
+    name: 'credits',
+    component: Credits,
   }
 ]
 
