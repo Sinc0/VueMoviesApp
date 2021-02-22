@@ -23,15 +23,6 @@ export default {
   {
     margin: 0px;
     padding: 0px;
-    min-height: 1000px;
+    min-height: 100vh;
   }
-
-    @media screen and (max-width: 1024px) {
-      #viewMovie
-      {
-        margin: 0px;
-        padding: 0px;
-        min-height: 0px;
-      }
-    }
 </style>

@@ -125,6 +125,7 @@ export default {
             loadFollowedShows()
             loadFollowedMovies()
 
+            //undisplay header
             document.getElementById("header").style.display = "none"
         })
 
