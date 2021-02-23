@@ -16,14 +16,12 @@
                     <option value="movie">Movies</option>
                 </select> -->
                 <p v-on:click="searchBarChangeType()" id="searchBarSelectBox">Shows</p>
-                <input id="searchBarInput" v-on:keyup="setSearchString()" placeholder="">
+                <input type="text" id="searchBarInput" v-on:keyup="setSearchString()" placeholder="">
                 <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Search</p>
             </div>
         </form>
-
         
-
-        <div v-if="getRecentlySearched != null" id="scrollBarSearch">
+        <div v-if="getRecentlySearched != null && getRecentlySearched.results.length != 0" id="scrollBarSearch">
             <!-- <h3 class="sliderCategory">Search Hits</h3>  -->
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <div v-if="hit.first_air_date != null">
@@ -36,8 +34,9 @@
                 </div>
             </div>
             
-            <p v-if="getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></p>
         </div>
+            <p id="searchLimitReached">You reached your search limit</p>
+            <p v-if="getRecentlySearched != null && getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></p>
         
         
         <div  id="clearSearchResults" v-on:click="clearSearchResults()">Clear</div>
@@ -131,48 +130,125 @@ export default {
 
         async function searchShows(queryString, queryType)
         {
-            var urlMovies = "https://api.themoviedb.org/3/search/movie?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
-            var urlShows = "https://api.themoviedb.org/3/search/tv?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
-            var url = null
+            //variables
+            var searchCount = JSON.parse(localStorage.getItem('searchCount'))
+            var searchLimitHour = 100
 
-            if(queryType == "Movies")
+            //validation
+            if(queryString == null || queryString == "") //check if search bar text is empty 
             {
-                url = urlMovies
+                console.log("validation error")
             }
-            else if(queryType == "Shows")
+            else if(searchCount != null && searchCount.value >= searchLimitHour) //check search count
             {
-                url = urlShows
+                var diff = Math.abs(Date.now() - searchCount.date)
+                // console.log(Math.abs(Date.now() - searchCount.date))
+                // console.log("diff: " + diff)
+                if(diff >= 3600000) //3.600.000 = 1h
+                {
+                    //reset count
+                    fetchShowData(queryString, queryType)
+                    searchCount.value = 1
+                    searchCount.date = Date.now()
+                    localStorage.setItem('searchCount', JSON.stringify(searchCount))
+                }
+                else
+                {
+                    //variables
+                    var minutesLeft = Math.abs(((Date.now() - searchCount.date) / 60000) - 60).toFixed(0)
+                    // console.log("count limit reached - time left: " + minutesLeft + " mins")
+                    var slr = document.getElementById("searchLimitReached")
+                    var sbs = document.getElementById("scrollBarSearch")
+                    
+                    //display search limit info
+                    slr.innerText = "wait " + minutesLeft + " mins to search again"
+                    slr.style.display = "block"
+                    if(sbs != null)
+                    {
+                        sbs.style.display = "none"
+                    }
+
+                    //save to vuex
+                    store.dispatch('showData/actionSetRecentlySearched', null)
+                    
+                    //save to local storage
+                    localStorage.setItem('recentlySearched', null)
+
+                    //show clear search
+                    document.getElementById("clearSearchResults").style.display = "block"
+                }
             }
+            else
+            {
+                fetchShowData(queryString, queryType)
 
-            await fetch(url, {method: 'get'})
-            .then((response) => {
-                console.log("search shows")
-                return response.json()
-            })
-            .then((data) => {
-                console.log(data)
-                searchShowsResult.data = data
+                //increment search count
+                if(searchCount != null)
+                {
+                    searchCount.value++  
+                }
+                else
+                {
+                    //searchCount.date + 3600) <= Date.now()
+                    searchCount = {date: Date.now(), value: 1}
+                }
 
-                //save to recently searched variable
-                // recentlySearched.value = computed(() => { return store.getters['showData/recentlySearched']})
-                // console.log("recentlySearched")
-                // console.log(recentlySearched)
+                localStorage.setItem('searchCount', JSON.stringify(searchCount))
+            }
+        }
 
-                //save to local storage
-                var rs = []
-                rs.push(JSON.stringify(data))
-                localStorage.setItem('recentlySearched', rs)
+        async function fetchShowData(queryString, queryType)
+        {
+                //display undisplay
+                var sbs = document.getElementById("scrollBarSearch")
+                var slr = document.getElementById("searchLimitReached")
+                if(slr != null)
+                {
+                    slr.style.display = "none"
+                }
 
-                //save to vuex
-                store.dispatch('showData/actionSetRecentlySearched', data)
-
-                //reset search bar text
-                document.getElementById("searchBarInput").value = ""
-
-                //show clear search
-                document.getElementById("clearSearchResults").style.display = "block"
-            })
-
+                var urlMovies = "https://api.themoviedb.org/3/search/movie?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
+                var urlShows = "https://api.themoviedb.org/3/search/tv?api_key=3010e2bf9f8b7fbc8e38ec004850995b&query=" + queryString
+                var url = null
+    
+                if(queryType == "Movies")
+                {
+                    url = urlMovies
+                }
+                else if(queryType == "Shows")
+                {
+                    url = urlShows
+                }
+    
+                await fetch(url, {method: 'get'})
+                .then((response) => {
+                    console.log("search shows")
+                    return response.json()
+                })
+                .then((data) => {
+                    console.log(data)
+                    searchShowsResult.data = data
+    
+                    //save to recently searched variable
+                    // recentlySearched.value = computed(() => { return store.getters['showData/recentlySearched']})
+                    // console.log("recentlySearched")
+                    // console.log(recentlySearched)
+    
+                    //save to local storage
+                    var rs = []
+                    rs.push(JSON.stringify(data))
+                    localStorage.setItem('recentlySearched', rs)
+    
+                    //save to vuex
+                    store.dispatch('showData/actionSetRecentlySearched', data)
+    
+                    //reset search bar and search string
+                    searchString.value = null
+                    document.getElementById("searchBarInput").value = ""
+    
+                    //show clear search
+                    document.getElementById("clearSearchResults").style.display = "block"
+                })
         }
 
         async function fetchFullShowData(id)
@@ -247,20 +323,49 @@ export default {
 
         function clearSearchResults()
         {
+            //variables
             var searchBox = document.getElementById("scrollBarSearch")
-            var ls = localStorage.setItem('recentlySearched', null)
+            var searchLimitReached = document.getElementById("searchLimitReached")
+            var searchNoResultsFound = document.getElementById("searchNoResultsFound")
+            var searchBarInput = document.getElementById("searchBarInput")
+
+            //save to vuex
             store.dispatch('showData/actionSetRecentlySearched', null)
 
-            if(searchBox.style.display == "none")
+            //save to local storage
+            var ls = localStorage.setItem('recentlySearched', null)
+
+            //display
+            if(searchBox != null)
             {
-                searchBox.style.display = "block"
+                if(searchBox.style.display == "none")
+                {
+                    searchBox.style.display = "block"
+                }
+                else
+                {
+                    searchBox.style.display = "none"
+                }
             }
-            else
+            
+            //undisplay
+            document.getElementById("clearSearchResults").style.display = "none"
+
+            if(searchLimitReached != null)
             {
-                searchBox.style.display = "none"
+                searchLimitReached.style.display = "none"
             }
 
-            document.getElementById("clearSearchResults").style.display = "none"
+            if(searchNoResultsFound != null)
+            {
+                searchNoResultsFound.style.display = "none"
+            }
+
+            if(searchBarInput != null)
+            {
+                searchBarInput.value = ""
+            }
+
         }
 
         async function followShow(show)
@@ -630,11 +735,34 @@ export default {
         margin: 0px;
         margin: auto;
         padding: 0px;
-        padding-top: 10px;
-        width: 681px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 696px;
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 27px;
-        /* font-weight: bold; */
+        font-size: 20px;
+        font-weight: bold;
+        border-left: 2px solid white;
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
+        color: white;
+        background-color: black;
+    }
+
+    #searchLimitReached
+    {
+        display: none;
+        margin: 0px;
+        margin: auto;
+        padding: 0px;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: 696px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+        border-left: 2px solid white;
+        border-right: 2px solid white;
+        border-bottom: 2px solid white;
         color: white;
         background-color: black;
     }
@@ -775,6 +903,8 @@ export default {
       #searchBox
       {
           /* margin: 0px; */
+          /* margin: auto; */
+          width: 94vw;
           padding: 0px;
           padding-top: 3vw;
       }
@@ -788,15 +918,21 @@ export default {
 
       #clearSearchResults
       {
-          width: 88vw;
+          margin: 0px;
+          padding: 0px;
+          padding-top: 10px;
+          padding-bottom: 10px;
+          width: 94vw;
           border: 0px;
           border-bottom: 2px solid white;
       }
 
       #searchBarInput
       {
-          /* margin-left: -2px; */
-          width: 92vw;
+          margin: 0px;
+          padding-left: 0px;
+          padding-right: 0px;
+          width: 94vw;
           border: 0px;
           border-top: 2px solid white;
           border-bottom: 2px solid white;
@@ -805,19 +941,21 @@ export default {
       #searchBarSelectBox, #searchBarSubmitButton
       {
           margin: auto;
+          padding-left: 0px;
+          padding-right: 0px;
           display: block;
           text-align: center;
       }
 
       #searchBarSubmitButton
       {
-          width: 93.5vw;
+          width: 94vw;
           border-bottom: 2px solid white;
       }
 
       #searchBarSelectBox
       {
-          width: 100%;
+          width: 94vw;
           border-top: 2px solid white;
       }
 
@@ -834,7 +972,16 @@ export default {
 
     #searchNoResultsFound
     {
-        width: 92vw;
+        width: 94vw;
+        border-left: 0px;
+        border-right: 0px;
+    }
+
+    #searchLimitReached
+    {
+        width: 94vw;
+        border-left: 0px;
+        border-right: 0px;
     }
   }
 </style>
