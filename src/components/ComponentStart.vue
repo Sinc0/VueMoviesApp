@@ -104,7 +104,7 @@ export default {
         {
             store.dispatch('showData/actionSetRecentlySearched', localStorageRecentlySearched)
         }
-        
+
         const getRecentlySearched = computed(() => { return store.getters['showData/recentlySearched']})
         const getFollowedShows = computed(() => { return store.getters['showData/followedShows']})
         const getFollowedMovies = computed(() => { return store.getters['showData/followedMovies']})
@@ -132,11 +132,16 @@ export default {
             //variables
             var searchCount = JSON.parse(localStorage.getItem('searchCount'))
             var searchLimitHour = 100
+            var specialCharacters = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
 
             //validation
-            if(queryString == null || queryString == "") //check if search bar text is empty 
+            if(queryString == null || queryString == undefined || queryString == "" || queryString == " " || queryString.includes("  "))
             {
-                console.log("validation error")
+                console.log("error: search string is empty or null")
+            }
+            else if(queryString.match(specialCharacters))
+            {
+                console.log("error: search string contains special characters")
             }
             else if(searchCount != null && searchCount.value >= searchLimitHour) //check search count
             {
