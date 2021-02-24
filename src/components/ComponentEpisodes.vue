@@ -30,7 +30,7 @@ export default {
         let selectedEpisode = null
         let localStorageData = []
 
-        //lifecycle
+        //lifecycle hooks
         onUpdated(() => {
           console.log("episode list updated")
           

@@ -1,54 +1,79 @@
 <template>
   <div>
-    <div id="showInfo" v-if="showInfo.data && showInfo.data.data.poster_path"> <!-- v-if="showInfo.data.id == showId" -->
-      <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
-      <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
-      <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
-      <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
-      <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
-      <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
-    </div>
-    
-    <div id="showInfoPosterMissing" v-else-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
-      <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
-      <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
-      <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
-      <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
-      <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
-      <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
+    <!-- check if correct data is loaded -->
+    <div v-if="selectedShow && path == selectedShow.id">
+      <!-- if show have poster -->
+      <div id="showInfo" v-if="showInfo.data && showInfo.data.data.poster_path"> <!-- v-if="showInfo.data.id == showId" -->
+        <img v-if="showInfo.data && showInfo.data.data.poster_path" id="showPoster" v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2' + showInfo.data.data.poster_path"/>
+        <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
+        <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
+        <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
+        <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
+        <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
+      </div>
+      
+      <!-- if show missing poster -->
+      <div id="showInfoPosterMissing" v-else-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
+        <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
+        <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
+        <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
+        <p v-if="showInfo.data" id="showStatus">Status: {{showInfo.data.data.status}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.number_of_episodes != 0" id="showNumberOfEpisodes">Total Episodes: {{showInfo.data.data.number_of_episodes}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="showNumberOfSeasons">Total Seasons: {{showInfo.data.data.number_of_seasons}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.last_air_date != null" id="showLastEpisode">Last Episode: {{showInfo.data.data.last_air_date}}</p>
+        <p v-if="showInfo.data && showInfo.data.data.next_episode_to_air && showInfo.data.data.status != 'Ended'" id="showNextEpisode">Next Episode: {{showInfo.data.data.next_episode_to_air.air_date}}</p>
+        <p v-if="showInfo.data" id="showDescription">{{showInfo.data.data.overview}}</p>
+      </div>
+
+      <!-- if show has seasons -->
+      <div id="scrollBarSeasons" v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0">
+        <div v-on:click="fetchShowSeason(showInfo.data.id, season.season_number)" v-for="season in showInfo.data.data.seasons.slice().reverse()" v-bind:key="season.id" class="season" v-bind:id="'season#' + season.season_number">
+          <p><b>{{season.name}}</b></p>
+          <img v-if="season.poster_path" v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
+          <img v-else v-bind:src="''" class="seasonImageMissing">
+        </div>
+      </div>
     </div>
 
-    <div id="scrollBarSeasons" v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0">
-      <div v-on:click="fetchShowSeason(showInfo.data.id, season.season_number)" v-for="season in showInfo.data.data.seasons.slice().reverse()" v-bind:key="season.id" class="season" v-bind:id="'season#' + season.season_number">
-        <p><b>{{season.name}}</b></p>
-        <img v-if="season.poster_path" v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
-        <img v-else v-bind:src="''" class="seasonImageMissing">
-      </div>
-    </div>  
+    <!-- if correct data is not loaded -->
+    <div v-if="selectedShow && path != selectedShow.id">
+      <h3> Loading... </h3>
+    </div>
   </div>
 </template>
 
 <script>
 import {ref, toRef, toRefs, reactive, computed, watch, watchEffect, onMounted, onBeforeMount, beforeUpdate, onUpdated, onBeforeUpdate} from 'vue'
 import {useStore} from 'vuex'
+import { useRouter, useRoute } from 'vue-router' //instead of this.$route
 
 export default {
     setup() {
+      //router
+      let path = useRouter().currentRoute.value.params.showId
+      // console.log(path)
 
       //vuex
       const store = useStore() //same as this.$store
-      const count = computed(() => store.getters['showData/times'])
+      // const count = computed(() => store.getters['showData/times'])
       const selectedShow = computed(() => { return store.getters['showData/selectedShow']})
+      // console.log(selectedShow.value.id)
       const selectedSeason = computed(() => { return store.getters['showData/selectedSeason']})
 
       //variables
+      var seasonData = null
+      var seasonData = null
+      var seasonNumber = null
+      var showId = null
+      var numberOfEpisodes = null
+      var airDate = null
+      var url = null
+      var localStorageData = []
+
       let showInfo = reactive({
         data: selectedShow,
         name: null,
@@ -72,7 +97,7 @@ export default {
       watch(seasonInfoRefs.data, (newValue, oldValue) => {
         // console.log("season#" + seasonInfoRefs.data.value.season + " selected")
         // console.log("old value: " + oldValue + " new value: " + newValue)
-        // console.log(seasonInfoRefs.data.value)
+        // console.log(seasonInfoRefs.data.value.season)
 
         selectedSeasonOpacityStyling(seasonInfoRefs.data.value.season)
       })
@@ -90,17 +115,13 @@ export default {
         window.scrollTo(0,0); //reset scroll to top
       })
 
+      //functions
       async function fetchShowSeason(show, season)
       {
           // console.log(show)
           // console.log(season)
 
-          var seasonData = null
-          var showId = show
-          var seasonNumber = season
-          var numberOfEpisodes = null
-          var airDate = null
-          var localStorageData = []
+          showId = show
           var ls = localStorage.getItem("savedSeasons")
           if(ls)
           {
@@ -108,13 +129,14 @@ export default {
             localStorageData = JSON.parse(ls)
           }
           var checkLocalStorage = JSON.stringify(localStorageData)
-          let newDate = new Date().toISOString().substr(0, 16)
+          var diff = null
+          // let newDate = new Date().toISOString().substr(0, 16)
           // console.log(seasons.length)
 
           //check if season is saved in localStorage
           if(checkLocalStorage.includes("show" + showId + "season" + season))
           {
-              console.log("season#" + season + " fetched from localStorage")
+              console.log("show#" + show + " - season#" + season + " - fetched from localStorage")
               
               localStorageData.forEach(s => {
                       if(s.searchString == "show" + showId + "season" + season)
@@ -125,39 +147,53 @@ export default {
                           // console.log(seasonData)
                           // console.log(seasonData.savedAt)
                           // console.log(newDate)
+
+                          diff = Math.abs(Date.now() - seasonData.savedAt)
+                          // console.log(diff)
+                          //console.log("savedAt: " + seasonData.savedAt)
+                          //console.log("diff: " + diff)
+                          
+                          //if last fetch was more than 1h ago fetch new data
+                          if(diff >= 3600000) //3.600.000 = 1h
+                          {
+                              localStorageData = localStorageData.filter(showSeason => showSeason.searchString != "show" + showId + "season" + season); //remove old data
+                              fetchSeasonDataFromAPI(show, season, localStorageData)
+                          }
+                          else
+                          {
+                              //vuex
+                              store.dispatch('showData/actionSetSelectedSeason', seasonData)
+                          }
+
+                          // //check when season data was fetched
+                          // if(seasonData.savedAt)
+                          // {
+                          //     //vuex
+                          //     store.dispatch('showData/actionSetSelectedSeason', seasonData)
+                          // }
+                          // else
+                          // {
+                          //     fetchSeasonDataFromAPI(show, seasonNumber, localStorageData)
+                          // }
                       }
                   })
 
-              //check when season data was fetched
-              if(DateValidation(seasonData.savedAt, newDate) == true)
-              {
-                  store.dispatch('showData/actionSetSelectedSeason', seasonData)
-              }
-              else
-              {
-                  fetchSeasonDataFromAPI(show, seasonNumber, localStorageData)
-              }
           }
           else
           {
-              fetchSeasonDataFromAPI(show, seasonNumber, localStorageData)
+              fetchSeasonDataFromAPI(show, season, localStorageData)
           }
       }
 
       async function fetchSeasonDataFromAPI(show, season, localStorageData)
       {
-        var seasonData = null
-        var showId = show
-        var seasonNumber = season
-        var seasonEpisodes = null
-        var numberOfEpisodes = null
-        var airDate = null
-        var localStorageData = localStorageData
-        var url = "https://api.themoviedb.org/3/tv/" + show + "/season/" + season + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
+        url = "https://api.themoviedb.org/3/tv/" + show + "/season/" + season + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
+        seasonNumber = season
+        localStorageData = localStorageData
         
         await fetch(url, {method: 'get'})
             .then((response) => {
-                  console.log("season#" + season + " data fetched from API")
+                  console.log("show#" + show + " - season#" + season + " - fetched from API")
                   return response.json()
             })
             .then((data) => {
@@ -169,7 +205,7 @@ export default {
                 //save to localStorage
                 // console.log(selectedShow.value.id)
                 // console.log(selectedShow.value.name)
-                localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: seasonNumber, episodes: data.episodes, searchString: "show" + selectedShow.value.id + "season" + seasonNumber, savedAt: new Date().toISOString().substr(0, 16)})
+                localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: season, episodes: data.episodes, searchString: "show" + selectedShow.value.id + "season" + season, savedAt: Date.now()})
                 localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
   
                 //vuex
@@ -177,40 +213,7 @@ export default {
             })
       }
 
-      function DateValidation(date1, date2)
-      {
-          let formattedDate1 = date1.substr(0, 4)
-          formattedDate1 += date1.substr(5, 2)
-          formattedDate1 += date1.substr(8, 2)
-          formattedDate1 += date1.substr(11, 2)
-          formattedDate1 += date1.substr(14, 2)
-          formattedDate1 = parseInt(formattedDate1)
-
-          let formattedDate2 = date2.substr(0, 4)
-          formattedDate2 += date2.substr(5, 2)
-          formattedDate2 += date2.substr(8, 2)
-          formattedDate2 += date2.substr(11, 2)
-          formattedDate2 += date2.substr(14, 2)
-          formattedDate2 = parseInt(formattedDate2)
-          // console.log(formattedDate1)
-          // console.log(formattedDate2)
-
-          let difference = Math.abs(formattedDate1 - formattedDate2)
-          // console.log(100 - difference + " minutes left until next API fetch")
-
-          //data was fetched more than 60 minutes ago
-          if(difference > 100)
-          {
-              return false
-          }
-          //data was fetched less than 60 minutes ago
-          else
-          {
-              return true
-          }
-      }
-
-      async function selectedSeasonOpacityStyling(season, numberOfEpisodes)
+      function selectedSeasonOpacityStyling(season, numberOfEpisodes)
       {
           // reduce opacity on not selected seasons
           var selectedDiv = document.getElementById("season#" + season)
@@ -239,12 +242,49 @@ export default {
             selectedDiv.style.opacity = "100%"
           } 
       }
+
+      // function DateValidation(date1, date2)
+      // {
+      //     let formattedDate1 = date1.substr(0, 4)
+      //     formattedDate1 += date1.substr(5, 2)
+      //     formattedDate1 += date1.substr(8, 2)
+      //     formattedDate1 += date1.substr(11, 2)
+      //     formattedDate1 += date1.substr(14, 2)
+      //     formattedDate1 = parseInt(formattedDate1)
+
+      //     let formattedDate2 = date2.substr(0, 4)
+      //     formattedDate2 += date2.substr(5, 2)
+      //     formattedDate2 += date2.substr(8, 2)
+      //     formattedDate2 += date2.substr(11, 2)
+      //     formattedDate2 += date2.substr(14, 2)
+      //     formattedDate2 = parseInt(formattedDate2)
+      //     // console.log(formattedDate1)
+      //     // console.log(formattedDate2)
+
+      //     let difference = Math.abs(formattedDate1 - formattedDate2)
+      //     // console.log(100 - difference + " minutes left until next API fetch")
+
+      //     //data was fetched more than 60 minutes ago
+      //     if(difference > 100)
+      //     {
+      //         return false
+      //     }
+      //     //data was fetched less than 60 minutes ago
+      //     else
+      //     {
+      //         return true
+      //     }
+      // }
        
       return {
         //variables
         showInfo,
         seasonInfo,
         seasonInfoRefs,
+        path,
+
+        //vuex
+        selectedShow,
 
         //functions
         fetchShowSeason,
@@ -257,7 +297,7 @@ export default {
 <style scoped>
   #showInfo {
     margin: auto;
-    margin-top: 35px;
+    margin-top: 40px;
     margin-bottom: 15px;
     padding: 10px;
     min-height: 235px;

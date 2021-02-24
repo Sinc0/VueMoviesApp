@@ -1,16 +1,25 @@
 <template>
-  <div> 
-    <div v-if="selectedMovie && selectedMovie.data.status_code != 34" id="movieInfo">
-      <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + selectedMovie.data.poster_path" id="moviePoster" />
-      <p v-if="selectedMovie.data.title" id="movieNameText"><b>{{selectedMovie.data.title}}</b></p>
-      <p v-if="selectedMovie.data.original_title != selectedMovie.data.title" id="movieOriginalNameText">original title: {{selectedMovie.data.original_title}}</p>
-      <p v-if="selectedMovie.data.status" id="movieStatus">status: {{selectedMovie.data.status}}</p>
-      <p v-if="selectedMovie.data.release_date" id="movieReleaseDate">released: {{selectedMovie.data.release_date}}</p>
-      <p v-if="selectedMovie.data.runtime" id="movieDuration">duration: {{selectedMovie.data.runtime}} mins</p>
-      <p v-if="selectedMovie.data.overview" id="movieDescription">{{selectedMovie.data.overview}}</p>
+  <div>
+    <!-- check if correct data is loaded -->
+    <div v-if="selectedMovie && path == selectedMovie.id">
+      <div v-if="selectedMovie && selectedMovie.data.status_code != 34" id="movieInfo">
+        <img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + selectedMovie.data.poster_path" id="moviePoster" />
+        <p v-if="selectedMovie.data.title" id="movieNameText"><b>{{selectedMovie.data.title}}</b></p>
+        <p v-if="selectedMovie.data.original_title != selectedMovie.data.title" id="movieOriginalNameText">original title: {{selectedMovie.data.original_title}}</p>
+        <p v-if="selectedMovie.data.status" id="movieStatus">status: {{selectedMovie.data.status}}</p>
+        <p v-if="selectedMovie.data.release_date" id="movieReleaseDate">release date: {{selectedMovie.data.release_date}}</p>
+        <p v-if="selectedMovie.data.runtime" id="movieDuration">duration: {{selectedMovie.data.runtime}} mins</p>
+        <p v-if="selectedMovie.data.overview" id="movieDescription">{{selectedMovie.data.overview}}</p>
+      </div>
+
+      <div v-if="selectedMovie && selectedMovie.data.status_code == 34">
+        <p id="errorMessage"><b>No movie with that id exist</b></p>
+      </div>
     </div>
-    <div v-if="selectedMovie && selectedMovie.data.status_code == 34">
-      <p id="errorMessage"><b>No movie with that id exist</b></p>
+
+    <!-- if correct data is not loaded -->
+    <div v-if="selectedMovie && path != selectedMovie.id">
+      <h3> Loading... </h3>
     </div>
   </div>
 </template>
@@ -18,12 +27,18 @@
 <script>
 import {ref, toRef, toRefs, reactive, computed, watch, watchEffect, onMounted, onBeforeMount, beforeUpdate, onUpdated, onBeforeUpdate} from 'vue'
 import {useStore} from 'vuex'
+import { useRouter, useRoute } from 'vue-router' //instead of this.$route
 
 export default {
     setup() {
+      //router
+      let path = useRouter().currentRoute.value.params.movieId
+      console.log(path)
+
       //vuex
       const store = useStore() //same as this.$store
       const selectedMovie = computed(() => { return store.getters['showData/selectedMovie']})
+      // console.log(selectedMovie.value.id)
       
       //lifecycle hooks
       onMounted(() => {
@@ -40,6 +55,9 @@ export default {
       })
 
       return {
+        //variables
+        path,
+
         //vuex
         selectedMovie
       }

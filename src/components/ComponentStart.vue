@@ -100,14 +100,12 @@ export default {
 
         //vuex
         const store = useStore() //same as this.$store
-        const getRecentlySearched = computed(() => { return store.getters['showData/recentlySearched']})
         if(localStorageRecentlySearched != null)
         {
-            var temp = localStorageRecentlySearched
-            console.log("temp")
-            console.log(temp)
-            store.dispatch('showData/actionSetRecentlySearched', temp)
+            store.dispatch('showData/actionSetRecentlySearched', localStorageRecentlySearched)
         }
+        
+        const getRecentlySearched = computed(() => { return store.getters['showData/recentlySearched']})
         const getFollowedShows = computed(() => { return store.getters['showData/followedShows']})
         const getFollowedMovies = computed(() => { return store.getters['showData/followedMovies']})
 
@@ -128,6 +126,7 @@ export default {
             document.getElementById("header").style.display = "none"
         })
 
+        //functions
         async function searchShows(queryString, queryType)
         {
             //variables
