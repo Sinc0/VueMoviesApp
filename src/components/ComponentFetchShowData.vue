@@ -59,7 +59,7 @@ export default {
             //check if show is saved in local storage
             if(checkLocalStorage.includes('ShowId=' + id))
             {
-                console.log("show exist in localStorage")
+                // console.log("show exist in localStorage")
 
                 localStorageData.forEach(s => {
                         if(s.searchString == "ShowId="+ id)
@@ -118,7 +118,7 @@ export default {
                 // {
                 localStorageData.push({id: data.id, name: data.name, data: data, searchString: 'ShowId=' + data.id, savedAt: Date.now()})
                 localStorage.setItem("savedShows", JSON.stringify(localStorageData))
-                console.log("show saved to localStorage")
+                // console.log("show saved to localStorage")
                 // }
 
                 //vuex

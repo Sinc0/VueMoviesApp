@@ -136,7 +136,7 @@ export default {
           //check if season is saved in localStorage
           if(checkLocalStorage.includes("show" + showId + "season" + season))
           {
-              console.log("show#" + show + " - season#" + season + " - fetched from localStorage")
+              // console.log("show#" + show + " - season#" + season + " - fetched from localStorage")
               
               localStorageData.forEach(s => {
                       if(s.searchString == "show" + showId + "season" + season)

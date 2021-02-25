@@ -33,7 +33,7 @@ export default {
     setup() {
       //router
       let path = useRouter().currentRoute.value.params.movieId
-      console.log(path)
+      // console.log(path)
 
       //vuex
       const store = useStore() //same as this.$store

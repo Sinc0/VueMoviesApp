@@ -39,7 +39,7 @@ export default {
             //check if movie is saved in local storage
             if(checkLocalStorage.includes('MovieId=' + id))
             {
-                console.log("movie exist in localStorage")
+                // console.log("movie exist in localStorage")
                 
                 localStorageData.forEach(m => {
                         if(m.searchString == "MovieId="+ id)
@@ -80,7 +80,7 @@ export default {
                       return response.json()
                 })
                 .then((data) => {
-                    console.log(data)
+                    // console.log(data)
                     
                     //set variables
                     movieData = {id: data.id, name: data.name, data: data}
@@ -101,7 +101,7 @@ export default {
                     // {
                     localStorageData.push({id: data.id, name: data.name, data: data, searchString: 'MovieId=' + data.id, savedAt: Date.now()})
                     localStorage.setItem("savedMovies", JSON.stringify(localStorageData))
-                    console.log("movie saved to localStorage")
+                    // console.log("movie saved to localStorage")
                     // }
     
                     //vuex

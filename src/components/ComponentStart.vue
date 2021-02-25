@@ -137,11 +137,11 @@ export default {
             //validation
             if(queryString == null || queryString == undefined || queryString == "" || queryString == " " || queryString.includes("  "))
             {
-                console.log("error: search string is empty or null")
+                // console.log("error: search string is empty or null")
             }
             else if(queryString.match(specialCharacters))
             {
-                console.log("error: search string contains special characters")
+                // console.log("error: search string contains special characters")
             }
             else if(searchCount != null && searchCount.value >= searchLimitHour) //check search count
             {
@@ -226,11 +226,11 @@ export default {
     
                 await fetch(url, {method: 'get'})
                 .then((response) => {
-                    console.log("search shows")
+                    // console.log("search shows")
                     return response.json()
                 })
                 .then((data) => {
-                    console.log(data)
+                    // console.log(data)
                     searchShowsResult.data = data
     
                     //save to recently searched variable
@@ -268,7 +268,7 @@ export default {
         
             await fetch(url, {method: 'get'})
             .then((response) => {
-                  console.log("show#" + id + " data fetched from API")
+                //   console.log("show#" + id + " data fetched from API")
                   return response.json()
             })
             .then((data) => {
@@ -288,13 +288,13 @@ export default {
                 let checkLocalStorage = JSON.stringify(localStorageData)
                 if(checkLocalStorage.includes('ShowId=' + data.id))
                 {
-                    console.log("show exist in localStorage")
+                    // console.log("show exist in localStorage")
                 }
                 else
                 {
                     localStorageData.push({id: data.id, name: data.name, data: data, searchString: 'ShowId=' + data.id})
                     localStorage.setItem("savedShows", JSON.stringify(localStorageData))
-                    console.log("show saved to localStorage")
+                    // console.log("show saved to localStorage")
                 }
 
             })
@@ -377,19 +377,19 @@ export default {
 
         async function followShow(show)
         {
-            console.log(show.id)
-            console.log(show)
+            // console.log(show.id)
+            // console.log(show)
             
             //variables
             var followedShows = []
 
             //fetch full show data
             var fullShowData = await fetchFullShowData(show.id)
-            console.log(fullShowData)
+            // console.log(fullShowData)
 
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedShows'))
-            console.log(ls)
+            // console.log(ls)
             if(ls != null)
             {
                 followedShows = ls
@@ -399,7 +399,7 @@ export default {
             if(JSON.stringify(followedShows).includes("FollowedShow" + show.id))
             {
                 //do nothing
-                console.log("show is already followed")
+                // console.log("show is already followed")
             }
             else
             {
@@ -413,8 +413,8 @@ export default {
      
         async function followMovie(movie)
         {
-            console.log(movie.id)
-            console.log(movie)
+            // console.log(movie.id)
+            // console.log(movie)
             
             //variables
             var followedMovies = []
@@ -425,7 +425,7 @@ export default {
 
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedMovies'))
-            console.log(ls)
+            // console.log(ls)
             if(ls != null)
             {
                 followedMovies = ls
@@ -435,7 +435,7 @@ export default {
             if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.id))
             {
                 //do nothing
-                console.log("movie is already followed")
+                // console.log("movie is already followed")
             }
             else
             {
@@ -449,7 +449,7 @@ export default {
 
         function unfollowShow(show)
         {
-            console.log(show.data.id)
+            // console.log(show.data.id)
             // console.log(show)
             
             //variables
@@ -477,7 +477,7 @@ export default {
 
         function unfollowMovie(movie)
         {
-            console.log(movie.data.id)
+            // console.log(movie.data.id)
             // console.log(movie)
             
             //variables
@@ -490,12 +490,12 @@ export default {
             {
                 followedMovies = ls
             }
-            console.log(followedMovies)
+            // console.log(followedMovies)
             //save to local storage
             if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.data.id))
             {
                 const filter = followedMovies.filter(m => m.searchString != "FollowedMovie" + movie.data.id);
-                console.log(movie)
+                // console.log(movie)
                 followedMovies = filter
                 localStorage.setItem('followedMovies', JSON.stringify(followedMovies))
             }
@@ -508,7 +508,7 @@ export default {
         {
             var followedShows = []
             var ls = JSON.parse(localStorage.getItem('followedShows'))
-            console.log(ls)
+            // console.log(ls)
             if(ls != null)
             {
                 followedShows = ls
@@ -520,7 +520,7 @@ export default {
         {
             var followedMovies = []
             var ls = JSON.parse(localStorage.getItem('followedMovies'))
-            console.log(ls)
+            // console.log(ls)
             if(ls != null)
             {
                 followedMovies = ls
