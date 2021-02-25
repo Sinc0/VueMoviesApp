@@ -39,18 +39,22 @@ export default {
     padding: 0px;
     min-height: 100vh;
   }
+  
+  h3, p {
+    color: black;
+  }
 
   @media screen and (max-width: 1024px) {
       h3 {
           margin: 0px;
           margin-top: 20px;
-          margin-bottom: 20px;
           padding: 0px;
       }
 
       p {
           margin: 0px;
           margin: auto;
+          margin-top: 10px;
           padding: 0px;
           width: 90vw;
       }

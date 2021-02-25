@@ -1,9 +1,8 @@
 <template>
     <div id="viewCredits">
         <h3>Credits</h3>
-        <p>credit #1</p>
-        <p>credit #2</p>
-        <p>credit #3</p>
+        <p>This product uses the TMDb API but is not endorsed or certified by TMDb.</p>
+        <a href="https://www.themoviedb.org"><img v-bind:src="'https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg'" id="tmdbLogo" /></a>
     </div>
 </template>
 
@@ -41,20 +40,32 @@ export default {
     padding: 0px;
     min-height: 100vh;
   }
+
+  #tmdbLogo
+  {
+    margin: 0px;
+    margin-top: 20px;
+    padding: 0px;
+    width: 23vw;
+  }
+
+  h3, p {
+    margin: 0px;
+    margin-top: 20px;
+    padding: 0px;
+    color: black;
+  }
   
   @media screen and (max-width: 1024px) {
-      h3 {
-          margin: 0px;
-          margin-top: 20px;
-          margin-bottom: 20px;
-          padding: 0px;
-      }
-
       p {
-          margin: 0px;
           margin: auto;
-          padding: 0px;
+          margin-top: 10px;
           width: 90vw;
       }
+      
+      #tmdbLogo
+      {
+        width: 70vw;
+      } 
   }
 </style>

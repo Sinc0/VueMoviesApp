@@ -69,7 +69,7 @@ export default {
 <style scoped>
   #movieInfo {
     margin: auto;
-    margin-top: 52px;
+    margin-top: 57px;
     margin-bottom: 15px;
     padding: 10px;
     min-height: 235px;
