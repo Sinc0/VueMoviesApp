@@ -14,7 +14,6 @@ export default {
     {
         //router
         let showId = useRouter().currentRoute.value.params.showId
-        // console.log(showId)
 
         // vuex
         const store = useStore()
@@ -39,14 +38,6 @@ export default {
         //functions
         async function fetchShowData(id)
         {
-            // var showData = null
-            // var seasonData = null
-            // var seasonNumber = null
-            // var showNumber = id
-            // var numberOfEpisodes = null
-            // var airDate = null
-            // var localStorageData = []
-            // var url = "https://api.themoviedb.org/3/tv/" + id + "?api_key=3010e2bf9f8b7fbc8e38ec004850995b"
 
             //get local storage saved movies data
             let ls = localStorage.getItem("savedShows")
@@ -59,15 +50,12 @@ export default {
             //check if show is saved in local storage
             if(checkLocalStorage.includes('ShowId=' + id))
             {
-                // console.log("show exist in localStorage")
-
+                //find show object
                 localStorageData.forEach(s => {
                         if(s.searchString == "ShowId="+ id)
                         {
                             showData = s
                             diff = Math.abs(Date.now() - showData.savedAt)
-                            //console.log("savedAt: " + showData.savedAt)
-                            //console.log("diff: " + diff)
                             
                             //if last fetch was more than 1h ago fetch new data
                             if(diff >= 3600000) //3.600.000 = 1h
@@ -97,29 +85,13 @@ export default {
                 return response.json()
             })
             .then((data) => {
-                // console.log(data)
                 
                 //set variables
                 showData = {id: data.id, name: data.name, data: data}
-                // console.log(showData)
 
-                // save to localStorage
-                // let ls = localStorage.getItem("savedShows")
-                // if(ls)
-                // {
-                //     localStorageData = JSON.parse(ls)
-                // }
-                // let checkLocalStorage = JSON.stringify(localStorageData)
-                // if(checkLocalStorage.includes('ShowId=' + data.id))
-                // {
-                //     console.log("show exist in localStorage")
-                // }
-                // else
-                // {
+                //save to local storage
                 localStorageData.push({id: data.id, name: data.name, data: data, searchString: 'ShowId=' + data.id, savedAt: Date.now()})
                 localStorage.setItem("savedShows", JSON.stringify(localStorageData))
-                // console.log("show saved to localStorage")
-                // }
 
                 //vuex
                 store.dispatch('showData/actionSetSelectedShow', showData)
@@ -129,7 +101,6 @@ export default {
         function undisplayEpisodeList()
         {
             var episodeList = document.getElementById("selectedSeasonEpisodes")
-            // console.log(episodeList)
             
             if(episodeList != null)
             {
@@ -141,7 +112,7 @@ export default {
         fetchShowData(showId)
 
         return {
-            //selectedShow
+            
         }   
     }
 }

@@ -17,7 +17,7 @@
       </div>
       
       <!-- if show missing poster -->
-      <div id="showInfoPosterMissing" v-else-if="showInfo.data"> <!-- v-if="showInfo.data.id == showId" -->
+      <div v-else-if="showInfo.data" id="showInfoPosterMissing"> <!-- v-if="showInfo.data.id == showId" -->
         <a v-if="showInfo.data" id="showNameLink" v-bind:href="showInfo.data.data.homepage"></a>
         <a id="showNameLink"><p id="showNameText">{{showInfo.data.name}}</p></a>
         <p v-if="showInfo.data.data.homepage" id="showHomePage">Homepage: {{showInfo.data.data.homepage}}</p>
@@ -30,7 +30,7 @@
       </div>
 
       <!-- if show has seasons -->
-      <div id="scrollBarSeasons" v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0">
+      <div v-if="showInfo.data && showInfo.data.data.number_of_seasons != 0" id="scrollBarSeasons">
         <div v-on:click="fetchShowSeason(showInfo.data.id, season.season_number)" v-for="season in showInfo.data.data.seasons.slice().reverse()" v-bind:key="season.id" class="season" v-bind:id="'season#' + season.season_number">
           <p><b>{{season.name}}</b></p>
           <img v-if="season.poster_path" v-bind:src="'https://www.themoviedb.org/t/p/w58_and_h87_face' + season.poster_path" class="seasonImage">
@@ -39,8 +39,13 @@
       </div>
     </div>
 
+    <!-- if show does not exist -->
+    <div v-if="showInfo.data != null && showInfo.data.data.status_code == 34">
+        <p id="errorMessage"><b>No show with that id exist</b></p>
+    </div>
+
     <!-- if correct data is not loaded -->
-    <div v-if="selectedShow && path != selectedShow.id">
+    <div v-else-if="selectedShow && path != selectedShow.id">
       <h3> Loading... </h3>
     </div>
   </div>
@@ -55,13 +60,10 @@ export default {
     setup() {
       //router
       let path = useRouter().currentRoute.value.params.showId
-      // console.log(path)
 
       //vuex
       const store = useStore() //same as this.$store
-      // const count = computed(() => store.getters['showData/times'])
       const selectedShow = computed(() => { return store.getters['showData/selectedShow']})
-      // console.log(selectedShow.value.id)
       const selectedSeason = computed(() => { return store.getters['showData/selectedSeason']})
 
       //variables
@@ -95,10 +97,6 @@ export default {
 
       //lifecycle hooks
       watch(seasonInfoRefs.data, (newValue, oldValue) => {
-        // console.log("season#" + seasonInfoRefs.data.value.season + " selected")
-        // console.log("old value: " + oldValue + " new value: " + newValue)
-        // console.log(seasonInfoRefs.data.value.season)
-
         selectedSeasonOpacityStyling(seasonInfoRefs.data.value.season)
       })
             
@@ -118,40 +116,23 @@ export default {
       //functions
       async function fetchShowSeason(show, season)
       {
-          // console.log(show)
-          // console.log(season)
-
           showId = show
           var ls = localStorage.getItem("savedSeasons")
           if(ls)
           {
-            // console.log(JSON.parse(ls))
             localStorageData = JSON.parse(ls)
           }
           var checkLocalStorage = JSON.stringify(localStorageData)
           var diff = null
-          // let newDate = new Date().toISOString().substr(0, 16)
-          // console.log(seasons.length)
 
           //check if season is saved in localStorage
           if(checkLocalStorage.includes("show" + showId + "season" + season))
           {
-              // console.log("show#" + show + " - season#" + season + " - fetched from localStorage")
-              
               localStorageData.forEach(s => {
                       if(s.searchString == "show" + showId + "season" + season)
                       {
                           seasonData = s
-
-                          // console.log("data from localStorage")
-                          // console.log(seasonData)
-                          // console.log(seasonData.savedAt)
-                          // console.log(newDate)
-
                           diff = Math.abs(Date.now() - seasonData.savedAt)
-                          // console.log(diff)
-                          //console.log("savedAt: " + seasonData.savedAt)
-                          //console.log("diff: " + diff)
                           
                           //if last fetch was more than 1h ago fetch new data
                           if(diff >= 3600000) //3.600.000 = 1h
@@ -164,17 +145,6 @@ export default {
                               //vuex
                               store.dispatch('showData/actionSetSelectedSeason', seasonData)
                           }
-
-                          // //check when season data was fetched
-                          // if(seasonData.savedAt)
-                          // {
-                          //     //vuex
-                          //     store.dispatch('showData/actionSetSelectedSeason', seasonData)
-                          // }
-                          // else
-                          // {
-                          //     fetchSeasonDataFromAPI(show, seasonNumber, localStorageData)
-                          // }
                       }
                   })
 
@@ -196,15 +166,11 @@ export default {
                   console.log("show#" + show + " - season#" + season + " - fetched from API")
                   return response.json()
             })
-            .then((data) => {
-                // console.log(data)
-                
+            .then((data) => {                
                 //set variables
                 seasonData = {showId: selectedShow.value.id, showName: selectedShow.value.name, season: data.season_number, episodes: data.episodes}
     
                 //save to localStorage
-                // console.log(selectedShow.value.id)
-                // console.log(selectedShow.value.name)
                 localStorageData.push({showId: selectedShow.value.id, showName: selectedShow.value.name, season: season, episodes: data.episodes, searchString: "show" + selectedShow.value.id + "season" + season, savedAt: Date.now()})
                 localStorage.setItem("savedSeasons", JSON.stringify(localStorageData))
   
@@ -215,15 +181,13 @@ export default {
 
       function selectedSeasonOpacityStyling(season, numberOfEpisodes)
       {
-          // reduce opacity on not selected seasons
+          //reduce opacity on not selected seasons
           var selectedDiv = document.getElementById("season#" + season)
           var seasons = document.getElementsByClassName("season")
           var seasonSpecials = document.getElementById("season#" + [0])
 
           if(seasonSpecials != null)
           {
-              // console.log(seasonSpecials)
-
               for(var c = 0; c < seasons.length; c++)
               {
                   document.getElementById("season#" + [c]).style.opacity = "50%"
@@ -242,39 +206,6 @@ export default {
             selectedDiv.style.opacity = "100%"
           } 
       }
-
-      // function DateValidation(date1, date2)
-      // {
-      //     let formattedDate1 = date1.substr(0, 4)
-      //     formattedDate1 += date1.substr(5, 2)
-      //     formattedDate1 += date1.substr(8, 2)
-      //     formattedDate1 += date1.substr(11, 2)
-      //     formattedDate1 += date1.substr(14, 2)
-      //     formattedDate1 = parseInt(formattedDate1)
-
-      //     let formattedDate2 = date2.substr(0, 4)
-      //     formattedDate2 += date2.substr(5, 2)
-      //     formattedDate2 += date2.substr(8, 2)
-      //     formattedDate2 += date2.substr(11, 2)
-      //     formattedDate2 += date2.substr(14, 2)
-      //     formattedDate2 = parseInt(formattedDate2)
-      //     // console.log(formattedDate1)
-      //     // console.log(formattedDate2)
-
-      //     let difference = Math.abs(formattedDate1 - formattedDate2)
-      //     // console.log(100 - difference + " minutes left until next API fetch")
-
-      //     //data was fetched more than 60 minutes ago
-      //     if(difference > 100)
-      //     {
-      //         return false
-      //     }
-      //     //data was fetched less than 60 minutes ago
-      //     else
-      //     {
-      //         return true
-      //     }
-      // }
        
       return {
         //variables
@@ -431,6 +362,11 @@ export default {
     margin-top: 10px;
     padding: 0px;
     padding-bottom: 87px;
+  }
+
+  #errorMessage
+  {
+    color: black;
   }
   
   /* width */

@@ -24,7 +24,6 @@ export default {
         //vuex
         const store = useStore() //same as this.$store
         const selectedSeason = computed(() => store.getters['showData/selectedSeason'])
-        // console.log(selectedSeason.value)
  
         //variables
         let selectedEpisode = null
@@ -44,9 +43,6 @@ export default {
 
         async function fetchEpisodeDetails(season, episode) 
         {
-            // console.log(season)
-            // console.log(episode)
-           
             var episodeTitle = document.getElementById('season#' + season + 'episode#' + episode + 'Title')
             var episodeDetails = document.getElementById('season#' + season + 'episode#' + episode + 'Details')
             var episodeImage = document.getElementById('season#' + season + 'episode#' + episode + 'Image')

@@ -1,20 +1,8 @@
 <template>
   <div>
-    <!-- search -->
-    <!-- <h3 id="searchHeaderText">Search</h3> -->
-    <!-- {{searchType.value}} -->
-    <!-- {{getRecentlySearched}} -->
-    <!-- {{recentlySearched}} -->
-    <!-- <button v-on:click="displaySearchBox()">searchBox</button> -->
-    <!-- {{getFollowedShows}} -->
-    <!-- {{getFollowedMovies}} -->
     <div id="searchBox">
         <form v-on:submit="searchShows(searchString.value, searchType.value)" onsubmit="return false;">
             <div id="searchBar">
-                <!-- <select id="searchBarSelectBox">
-                    <option value="tv">Shows</option>
-                    <option value="movie">Movies</option>
-                </select> -->
                 <p v-on:click="searchBarChangeType()" id="searchBarSelectBox">Shows</p>
                 <input type="text" id="searchBarInput" v-on:keyup="setSearchString()" placeholder="search for shows..." maxlength="100">
                 <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Search</p>
@@ -22,12 +10,12 @@
         </form>
         
         <div v-if="getRecentlySearched != null && getRecentlySearched.results.length != 0" id="scrollBarSearch">
-            <!-- <h3 class="sliderCategory">Search Hits</h3>  -->
             <div v-for="hit in getRecentlySearched.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
                 <div v-if="hit.first_air_date != null">
                     <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
                     <p v-on:click="followShow(hit)" class="followShow">Follow</p>
                 </div>
+
                 <div v-if="hit.first_air_date == null">
                     <router-link v-bind:to="'/movie/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
                     <p v-on:click="followMovie(hit)" class="followMovie">Follow</p>
@@ -35,25 +23,10 @@
             </div>
             
         </div>
-            <p id="searchLimitReached">You reached your search limit</p>
-            <p v-if="getRecentlySearched != null && getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></p>
         
-        
+        <p id="searchLimitReached">You reached your search limit</p>
+        <p v-if="getRecentlySearched != null && getRecentlySearched.results.length == 0" id="searchNoResultsFound">No Results Found <!-- ({{searchString.value}}) --></p>
         <div  id="clearSearchResults" v-on:click="clearSearchResults()">Clear</div>
-
-        <div v-if="searchShowsResult.data" id="searchResults">
-            <!-- <div id="scrollBarSearch">
-                <div v-for="hit in searchShowsResult.data.results.filter(show => show.poster_path != null)" v-bind:key="hit.id" class="hit">
-                    <router-link v-bind:to="'/show/' + hit.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + hit.poster_path" /></router-link>
-                    <p class="saveShow">save</p>
-                </div>
-            </div> -->
-            <!-- <router-link v-for="hit in searchShowsResult.data.results.slice(0,9)" v-bind:key="hit.id" :to="'/show/' + hit.id"><p class="searchHit">{{hit.title}}</p>{{hit.id}} - {{hit.title}} [{{hit.release_date.substr(0,4)}}]</router-link> -->
-            <!-- <p>searchString: {{searchString.value}}</p> -->
-            <!-- <p>total hits: {{searchShowsResult.data.total_results}}</p> -->
-            
-            <!-- <p>total displayed: 10 </p> -->
-        </div>
     </div>
     
     <!-- shows -->
@@ -72,8 +45,6 @@
         <h3 v-if="getFollowedMovies != 0" class="sliderCategory">Followed Movies</h3>
         <div v-if="getFollowedMovies != null && getFollowedMovies.length != 0" id="scrollBarMovies" class="sliderCategory">
             <div v-for="movie in getFollowedMovies.slice().reverse()" v-bind:key="movie.id" class="movie">
-                <!-- <p v-if="movie.data.status == 'Ended' || movie.data.next_episode_to_air == null" id="followedMovieStatus">{{movie.data.status}}</p> -->
-                <!-- <p v-if="movie.data.status != 'Ended' && movie.data.next_episode_to_air != null" id="followedMovieNextEpisode">Next Air: {{movie.data.next_episode_to_air.air_date}}</p> -->
                 <router-link v-bind:to="'/movie/' + movie.data.id"><img v-bind:src="'https://www.themoviedb.org/t/p/w600_and_h900_bestv2/' + movie.data.poster_path" /></router-link>
                 <p v-on:click="unfollowMovie(movie)" class="unfollowMovie">Unfollow</p>
             </div>
@@ -92,11 +63,9 @@ export default {
         //variables
         var localStorageRecentlySearched = localStorage.getItem('recentlySearched')
         localStorageRecentlySearched = JSON.parse(localStorageRecentlySearched)
-        // console.log(localStorageRecentlySearched.data)
         var searchShowsResult = reactive({data: null})
         var searchString = reactive({value: null})
         var searchType = reactive({value: "Shows"})
-        // var recentlySearched = reactive({value: "Recently Searched"})
 
         //vuex
         const store = useStore() //same as this.$store
@@ -146,8 +115,8 @@ export default {
             else if(searchCount != null && searchCount.value >= searchLimitHour) //check search count
             {
                 var diff = Math.abs(Date.now() - searchCount.date)
-                // console.log(Math.abs(Date.now() - searchCount.date))
-                // console.log("diff: " + diff)
+
+                //if last fetch was more than 1h ago fetch new data
                 if(diff >= 3600000) //3.600.000 = 1h
                 {
                     //reset count
@@ -160,7 +129,6 @@ export default {
                 {
                     //variables
                     var minutesLeft = Math.abs(((Date.now() - searchCount.date) / 60000) - 60).toFixed(0)
-                    // console.log("count limit reached - time left: " + minutesLeft + " mins")
                     var slr = document.getElementById("searchLimitReached")
                     var sbs = document.getElementById("scrollBarSearch")
                     
@@ -193,7 +161,6 @@ export default {
                 }
                 else
                 {
-                    //searchCount.date + 3600) <= Date.now()
                     searchCount = {date: Date.now(), value: 1}
                 }
 
@@ -226,17 +193,12 @@ export default {
     
                 await fetch(url, {method: 'get'})
                 .then((response) => {
-                    // console.log("search shows")
                     return response.json()
                 })
                 .then((data) => {
-                    // console.log(data)
+
+                    //set variables
                     searchShowsResult.data = data
-    
-                    //save to recently searched variable
-                    // recentlySearched.value = computed(() => { return store.getters['showData/recentlySearched']})
-                    // console.log("recentlySearched")
-                    // console.log(recentlySearched)
     
                     //save to local storage
                     var rs = []
@@ -268,16 +230,12 @@ export default {
         
             await fetch(url, {method: 'get'})
             .then((response) => {
-                //   console.log("show#" + id + " data fetched from API")
                   return response.json()
             })
             .then((data) => {
-                // console.log(data)
                 
                 //set variables
                 showData = data
-                // showData = {id: data.id, name: data.name, data: data}
-                // console.log(showData)
   
                 // save to localStorage
                 let ls = localStorage.getItem("savedShows")
@@ -312,7 +270,6 @@ export default {
         {
             var searchTypeButton = document.getElementById("searchBarSelectBox")
             var searchBar = document.getElementById("searchBarInput")
-            // console.log(searchTypeButton)
 
             if(searchTypeButton.innerText == "Shows")
             {
@@ -377,19 +334,15 @@ export default {
 
         async function followShow(show)
         {
-            // console.log(show.id)
-            // console.log(show)
             
             //variables
             var followedShows = []
 
             //fetch full show data
             var fullShowData = await fetchFullShowData(show.id)
-            // console.log(fullShowData)
 
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedShows'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedShows = ls
@@ -398,7 +351,6 @@ export default {
             //save to local storage
             if(JSON.stringify(followedShows).includes("FollowedShow" + show.id))
             {
-                //do nothing
                 // console.log("show is already followed")
             }
             else
@@ -413,19 +365,11 @@ export default {
      
         async function followMovie(movie)
         {
-            // console.log(movie.id)
-            // console.log(movie)
-            
             //variables
             var followedMovies = []
 
-            //fetch full show data
-            // var fullMovieData = await fetchFullShowData(show.id)
-            // console.log(fullMovieData)
-
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedMovies'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedMovies = ls
@@ -434,7 +378,6 @@ export default {
             //save to local storage
             if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.id))
             {
-                //do nothing
                 // console.log("movie is already followed")
             }
             else
@@ -448,16 +391,12 @@ export default {
         }
 
         function unfollowShow(show)
-        {
-            // console.log(show.data.id)
-            // console.log(show)
-            
+        {            
             //variables
             var followedShows = []
 
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedShows'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedShows = ls
@@ -477,30 +416,25 @@ export default {
 
         function unfollowMovie(movie)
         {
-            // console.log(movie.data.id)
-            // console.log(movie)
-            
             //variables
             var followedMovies = []
 
             //get from local storage
             var ls = JSON.parse(localStorage.getItem('followedMovies'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedMovies = ls
             }
-            // console.log(followedMovies)
+            
             //save to local storage
             if(JSON.stringify(followedMovies).includes("FollowedMovie" + movie.data.id))
             {
                 const filter = followedMovies.filter(m => m.searchString != "FollowedMovie" + movie.data.id);
-                // console.log(movie)
                 followedMovies = filter
                 localStorage.setItem('followedMovies', JSON.stringify(followedMovies))
             }
 
-            // save to vuex
+            //save to vuex
             store.dispatch('showData/actionSetFollowedMovies', followedMovies)
         }
 
@@ -508,11 +442,12 @@ export default {
         {
             var followedShows = []
             var ls = JSON.parse(localStorage.getItem('followedShows'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedShows = ls
             }
+
+            //save to vuex
             store.dispatch('showData/actionSetFollowedShows', followedShows)
         }
 
@@ -520,11 +455,12 @@ export default {
         {
             var followedMovies = []
             var ls = JSON.parse(localStorage.getItem('followedMovies'))
-            // console.log(ls)
             if(ls != null)
             {
                 followedMovies = ls
             }
+
+            //save to vuex
             store.dispatch('showData/actionSetFollowedMovies', followedMovies)
         }
 
@@ -538,7 +474,6 @@ export default {
             searchShowsResult,
             searchString,
             searchType,
-            // recentlySearched,
 
             //vuex
             getRecentlySearched,
