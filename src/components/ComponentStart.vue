@@ -16,7 +16,7 @@
                     <option value="movie">Movies</option>
                 </select> -->
                 <p v-on:click="searchBarChangeType()" id="searchBarSelectBox">Shows</p>
-                <input type="text" id="searchBarInput" v-on:keyup="setSearchString()" placeholder="">
+                <input type="text" id="searchBarInput" v-on:keyup="setSearchString()" placeholder="search for shows..." maxlength="100">
                 <p v-on:click="searchShows(searchString.value, searchType.value)" id="searchBarSubmitButton">Search</p>
             </div>
         </form>
@@ -311,17 +311,20 @@ export default {
         function searchBarChangeType()
         {
             var searchTypeButton = document.getElementById("searchBarSelectBox")
+            var searchBar = document.getElementById("searchBarInput")
             // console.log(searchTypeButton)
 
             if(searchTypeButton.innerText == "Shows")
             {
                 searchType.value = "Movies"
                 searchTypeButton.innerText = "Movies"
+                searchBar.placeholder = "search for movies..."
             }
             else if(searchTypeButton.innerText == "Movies")
             {
                 searchType.value = "Shows"
                 searchTypeButton.innerText = "Shows"
+                searchBar.placeholder = "search for shows..."
             }
         }
 
@@ -934,9 +937,9 @@ export default {
       #searchBarInput
       {
           margin: 0px;
-          padding-left: 0px;
-          padding-right: 0px;
-          width: 94vw;
+          padding-left: 7px;
+          padding-right: 7px;
+          width: calc(94vw - 14px);
           border: 0px;
           border-top: 2px solid white;
           border-bottom: 2px solid white;
