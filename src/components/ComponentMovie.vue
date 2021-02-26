@@ -168,7 +168,7 @@ export default {
   {
     padding-top: 0px;
     width: ;
-    opacity: 75%;
+    opacity: .75;
   }
 
   #errorMessage

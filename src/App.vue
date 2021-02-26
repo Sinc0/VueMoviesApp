@@ -103,14 +103,14 @@ body {
   margin: 0px;
   padding: 0px;
   padding: 3px;
-  opacity: 35%;
+  opacity: .35;
   font-weight: bold;
   color: black;
 }
 
 .footerLinkDivider
 {
-  opacity: 35%;
+  opacity: .35%;
   font-weight: bold;
 }
 
@@ -121,7 +121,7 @@ body {
   width: 100vw;
   font-size: 20px;
   text-align: left;
-  /* opacity: 70%; */
+  opacity: .70;
   color: black;
   background-color: white;
 }
@@ -173,9 +173,9 @@ a
     margin-top: 10px;
   }
 
-  body {
-    /* background-color: black; */
-  }
+  /* body {
+    background-color: black;
+  } */
 
   /*** scrollbar ***/
     

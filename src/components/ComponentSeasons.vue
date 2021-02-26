@@ -190,20 +190,20 @@ export default {
           {
               for(var c = 0; c < seasons.length; c++)
               {
-                  document.getElementById("season#" + [c]).style.opacity = "50%"
+                  document.getElementById("season#" + [c]).style.opacity = ".50"
               }
           }
           else
           {
               for(var c = 1; c <= seasons.length; c++)
               {
-                  document.getElementById("season#" + [c]).style.opacity = "50%"
+                  document.getElementById("season#" + [c]).style.opacity = ".50"
               }
           }
 
           if(selectedDiv != null)
           {
-            selectedDiv.style.opacity = "100%"
+            selectedDiv.style.opacity = "100"
           } 
       }
        
@@ -312,7 +312,7 @@ export default {
   #showDescription 
   {
     width: ;
-    opacity: 75%;
+    opacity: .75;
   }
 
   #scrollBarSeasons 

@@ -538,7 +538,7 @@ export default {
         margin-right: 15px;
         height: 305px;
         width: 205px;
-        background-image: url('');
+        /* background-image: url(''); */
     }
 
     .hit
@@ -548,12 +548,12 @@ export default {
         margin-right: 15px;
         height: 305px;
         width: 205px;
-        opacity: 75%;
+        opacity: .75;
     }
 
     .hit:hover
     {
-        opacity: 100%;
+        opacity: 100;
     }
 
     .sliderCategory
@@ -567,10 +567,10 @@ export default {
         /* background-color: white; */
     }
 
-    #searchHeaderText
+    /* #searchHeaderText
     {
     
-    }
+    } */
 
     #searchBox
     {
@@ -645,11 +645,11 @@ export default {
         margin-right: -1px;
     }
 
-    #searchBarSubmitButton:active, #searchBarSubmitButton:hover
+    /* #searchBarSubmitButton:active, #searchBarSubmitButton:hover
     {
-        /* color: black; */
-        /* background-color: white; */
-    }
+        color: black;
+        background-color: white;
+    } */
 
     /* #searchBarSubmitButton
     {
@@ -667,10 +667,10 @@ export default {
         background-color: green;
     } */
 
-    #searchBox input::placeholder
+    /* #searchBox input::placeholder
     {
-        /* color: white; */
-    }
+        color: white;
+    } */
 
     #searchNoResultsFound
     {
@@ -755,7 +755,7 @@ export default {
         padding-top: 8px;
         padding-bottom: 8px;
         /* height: 30px; */
-        opacity: 99%;
+        opacity: .99;
         font-weight: bold;
         color: white;
         background-color: black;
@@ -907,10 +907,10 @@ export default {
         height: 7px;
     }
 
-    .sliderCategory
+    /* .sliderCategory
     {
-        /* color: white; */
-    }
+        color: white;
+    } */
 
     #searchNoResultsFound
     {
